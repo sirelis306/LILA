@@ -7,7 +7,7 @@ include __DIR__ . '/shared/dashboard_layout.php';
     <!-- Tarjeta 1: Registrar Tasa -->
     <div class="dashboard-card">
         <h3 class="card-title">Tasa del Día</h3>
-        <p class="card-label">Registra la tasa de cambio al inicio de tu jornada (una vez por día).</p>
+        <p class="card-label">Registra la tasa de cambio antes de gestionar ventas</p>
         <a href="<?= BASE_URL ?>?r=form-tasa" class="btn btn-primary">Registrar Tasa</a>
     </div>
 

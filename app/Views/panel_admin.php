@@ -1,5 +1,5 @@
 <?php
-$titulo = "Panel de Administración";
+$titulo = "Panel de Administrador";
 include __DIR__ . '/shared/dashboard_layout.php';
 ?>
 
@@ -7,7 +7,7 @@ include __DIR__ . '/shared/dashboard_layout.php';
     <!-- Tarjeta 1: Gestión de Tasas -->
     <div class="dashboard-card">
         <h3 class="card-title">Gestión de Tasas</h3>
-        <p class="card-label">Administra la tasa de cambio del día para cálculos precisos en ventas.</p>
+        <p class="card-label">Administra la tasa de cambio del día.</p>
         <a href="<?= BASE_URL ?>?r=form-tasa" class="btn btn-primary">Gestionar Tasas</a>
     </div>
 

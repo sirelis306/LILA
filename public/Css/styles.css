@@ -443,6 +443,17 @@ body {
     flex-wrap: wrap;
 }
 
+/* Ajuste opcional para espaciado */
+.quick-actions-bottom {
+    margin-top: 20px;
+}
+
+/* Asegurar que los botones se centren */
+.action-buttons-grid {
+    justify-content: center;
+}
+
+
 /* Estadísticas opcionales */
 .stats-section {
     margin-top: 30px;
