@@ -1,4 +1,5 @@
 <?php
+
 require_once __DIR__ . "/../Config/db.php";
 
 class TasaModel {
@@ -43,5 +44,5 @@ class TasaModel {
         $stmt->execute();
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
-}
+} 
 ?>

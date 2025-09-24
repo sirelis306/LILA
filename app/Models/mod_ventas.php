@@ -78,5 +78,5 @@ class VentasModel {
         $stmt->execute([$idTasa]);
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
-}
+} 
 ?>

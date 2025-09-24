@@ -66,7 +66,7 @@ class TasaController {
         
         // Guardar tasa
         if ($model->guardarTasa($tasa, $fecha, $idUsuario)) {
-            $_SESSION['flash'] = "Tasa registrada exitosamente";
+            $_SESSION['flash'] = "Tasa registrada exitosamente (Modo Prueba)";
             header("Location: " . BASE_URL . "?r=ventas");
         } else {
             $_SESSION['flash'] = "Error al registrar la tasa";

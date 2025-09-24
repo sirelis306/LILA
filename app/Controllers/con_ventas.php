@@ -11,11 +11,11 @@ class VentasController {
         $model = new VentasModel();
         $tasaHoy = $model->getTasaHoy();
         
-        if (!$tasaHoy) {
+        /*if (!$tasaHoy) {
             $_SESSION['flash'] = "Debe registrar la tasa del día primero";
             header("Location: " . BASE_URL . "?r=form-tasa");
             exit;
-        }
+        }*/
 
         include __DIR__ . '/../Views/ventas/form.php';
     }
