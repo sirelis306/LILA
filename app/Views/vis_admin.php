@@ -14,15 +14,15 @@ include __DIR__ . '/shared/dashboard_layout.php';
     <!-- Tarjeta 2: Módulo de Ventas -->
     <div class="dashboard-card">
         <h3 class="card-title">Módulo de Ventas</h3>
-        <p class="card-label">Accede al sistema de ventas y revisa el historial de transacciones.</p>
+        <p class="card-label">Revisa el historial de transacciones.</p>
         <a href="<?= BASE_URL ?>?r=ventas" class="btn btn-success">Ir a Ventas</a>
     </div>
 
     <!-- Tarjeta 3: Gestión de Inventario -->
     <div class="dashboard-card">
         <h3 class="card-title">Gestión de Inventario</h3>
-        <p class="card-label">Próximamente: Administra productos, stock y proveedores.</p>
-        <button class="btn btn-secondary" disabled>Próximamente</button>
+        <p class="card-label">Administra productos y stock.</p>
+        <a href="<?= BASE_URL ?>?r=inventario" class="btn btn-success">Ir a Inventario</a>
     </div>
 
     <!-- Tarjeta 4: Reportes -->

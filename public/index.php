@@ -10,6 +10,7 @@ require_once __DIR__ . '/../app/controllers/con_auth.php';
 require_once __DIR__ . '/../app/controllers/con_dashboard.php';
 require_once __DIR__ . '/../app/controllers/con_tasa.php'; 
 require_once __DIR__ . '/../app/controllers/con_ventas.php';
+require_once __DIR__ . '/../app/controllers/con_inventario.php'; 
 
 $r = $_GET['r'] ?? 'login';
 
@@ -25,10 +26,15 @@ switch ($r) {
   case 'admin':          requireRole(['administrador']);  (new DashboardController)->admin(); break;
   case 'empleado':       requireRole(['empleado','administrador']); (new DashboardController)->empleado(); break;
 
-case 'ventas': (new VentasController)->formVenta(); break;
-case 'buscar-producto': (new VentasController)->buscarProducto(); break;
-case 'procesar-venta': (new VentasController)->procesarVenta(); break;
-case 'historial-ventas': (new VentasController)->historialVentas(); break;
+  case 'ventas': (new VentasController)->formVenta(); break;
+  case 'buscar-producto': (new VentasController)->buscarProducto(); break;
+  case 'procesar-venta': (new VentasController)->procesarVenta(); break;
+  case 'historial-ventas': (new VentasController)->historialVentas(); break;
+
+  case 'inventario':     requireRole(['administrador']); (new InventarioController)->index(); break;
+  case 'form-producto':  requireRole(['administrador']); (new InventarioController)->formProducto(); break;
+  case 'guardar-producto': requireRole(['administrador']); (new InventarioController)->guardarProducto(); break;
+  case 'eliminar-producto': requireRole(['administrador']); (new InventarioController)->eliminarProducto(); break;
 
   default:
     http_response_code(404);

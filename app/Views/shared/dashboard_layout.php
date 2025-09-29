@@ -10,6 +10,8 @@ $currentPage = $_GET['r'] ?? 'admin';
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sistema LILA - <?= $titulo ?? 'Dashboard' ?></title>
     <link rel="stylesheet" href="<?= BASE_URL ?>css/styles.css?v=3.0">
+    <!-- UIcons Flaticon CDN -->
+    <link rel="stylesheet" href="https://cdn-uicons.flaticon.com/2.1.0/uicons-regular-rounded/css/uicons-regular-rounded.css">
 </head>
 <body>
     <div class="app-container">
@@ -23,18 +25,24 @@ $currentPage = $_GET['r'] ?? 'admin';
             <nav class="sidebar-nav">
                 <a href="<?= BASE_URL ?>?r=<?= $esAdmin ? 'admin' : 'empleado' ?>" 
                    class="sidebar-link <?= $currentPage === 'admin' || $currentPage === 'empleado' ? 'active' : '' ?>">
-                   Inicio
+                   <i class="fi fi-rr-home"></i> Inicio
                 </a>
                 <a href="<?= BASE_URL ?>?r=form-tasa" 
                    class="sidebar-link <?= $currentPage === 'form-tasa' ? 'active' : '' ?>">
-                   Tasa del Día
+                   <i class="fi fi-rr-money-bill-wave"></i> Tasa del Día
                 </a>
                 <a href="<?= BASE_URL ?>?r=ventas" 
                    class="sidebar-link <?= $currentPage === 'ventas' ? 'active' : '' ?>">
-                   Ventas
+                   <i class="fi fi-rr-shopping-cart"></i> Ventas
                 </a>
+                <?php if ($esAdmin): ?>
+                <a href="<?= BASE_URL ?>?r=inventario" 
+                   class="sidebar-link <?= $currentPage === 'inventario' ? 'active' : '' ?>">
+                   <i class="fi fi-rr-box"></i> Inventario
+                </a>
+                <?php endif; ?>
                 <a href="<?= BASE_URL ?>?r=logout" class="sidebar-link">
-                   Cerrar Sesión
+                   <i class="fi fi-rr-exit"></i> Cerrar Sesión
                 </a>
             </nav>
         </aside>
