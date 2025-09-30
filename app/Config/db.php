@@ -1,7 +1,8 @@
 <?php
 
 $host = "localhost";
-$dbname = "lila";
+//$dbname = "lila";
+$dbname = "lila_test";
 $user = "root";
 $pass = "";
 

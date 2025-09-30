@@ -1,9 +1,27 @@
-//JavaScript externo para módulo de ventas
-
 // Variables globales
 let carrito = [];
 let tasaDelDia = typeof TASA_DEL_DIA !== 'undefined' ? TASA_DEL_DIA : 36.50;
 let descuentoAplicado = 0;
+
+// ==================== FUNCIÓN QUE FALTABA ====================
+function obtenerCarrito() {
+    return carrito;
+}
+
+function formatearMoneda(valor, moneda = "USD") {
+    if (moneda === "VES") {
+        return parseFloat(valor).toLocaleString("es-VE", {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2
+        }) + " Bs";
+    } else {
+        return parseFloat(valor).toLocaleString("es-VE", {
+            style: "currency",
+            currency: "USD",
+            minimumFractionDigits: 2
+        });
+    }
+}
 
 // Inicialización cuando el DOM esté listo
 document.addEventListener('DOMContentLoaded', function() {
@@ -22,8 +40,8 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
     
-    // Cargar clientes si existe el select
-    cargarClientes();
+    // Cargar clientes si existe el select - COMENTADO TEMPORALMENTE
+    // cargarClientes();
     
     // Configurar búsqueda con Enter
     const buscarInput = document.getElementById('buscar-producto');
@@ -46,6 +64,16 @@ async function buscarProducto() {
 
     try {
         const response = await fetch(`${BASE_URL}?r=buscar-producto&q=${encodeURIComponent(busqueda)}`);
+        
+        // Verificar si la respuesta es HTML de error
+        const contentType = response.headers.get('content-type');
+        if (!contentType || !contentType.includes('application/json')) {
+            const text = await response.text();
+            console.error('Respuesta no JSON:', text.substring(0, 200));
+            alert('Error en el servidor. La búsqueda no está disponible.');
+            return;
+        }
+        
         const productos = await response.json();
         mostrarResultados(productos);
     } catch (error) {
@@ -70,14 +98,14 @@ function mostrarResultados(productos) {
 
     let html = '';
     productos.forEach(producto => {
-        const estaAgotado = producto.stock <= 0;
-        const nombreSeguro = producto.nombre.replace(/'/g, "\\'").replace(/"/g, '&quot;');
+        const estaAgotado = producto.cantidad <= 0;
+        const nombreSeguro = producto.nombre_producto.replace(/'/g, "\\'").replace(/"/g, '&quot;');
         html += `
             <div class="producto-item ${estaAgotado ? 'producto-agotado' : ''}" 
-                 onclick="${estaAgotado ? '' : `agregarAlCarrito(${producto.id_producto}, '${nombreSeguro}', ${producto.precio}, ${producto.stock})`}">
-                <div class="producto-nombre">${producto.nombre}</div>
-                <div class="producto-precio">$${parseFloat(producto.precio).toFixed(2)}</div>
-                <div class="producto-stock">Stock: ${producto.stock} ${estaAgotado ? '❌ Agotado' : '✅ Disponible'}</div>
+                onclick="${estaAgotado ? '' : `agregarAlCarrito(${producto.id_producto}, '${nombreSeguro}', ${producto.precio_usd}, ${producto.cantidad})`}">
+                <div class="producto-nombre">${producto.nombre_producto}</div>
+                <div class="producto-precio">${formatearMoneda(producto.precio_usd)}</div>
+                <div class="producto-stock">Stock: ${producto.cantidad} ${estaAgotado ? '❌ Agotado' : '✅ Disponible'}</div>
             </div>
         `;
     });
@@ -145,43 +173,82 @@ function vaciarCarrito() {
     if (confirm('¿Estás seguro de vaciar el carrito?')) {
         carrito = [];
         descuentoAplicado = 0;
-        const descuentoInput = document.getElementById('descuento-input');
-        if (descuentoInput) descuentoInput.value = '';
         actualizarCarrito();
     }
 }
 
-function aplicarDescuento(monto) {
-    descuentoAplicado = parseFloat(monto) || 0;
-    if (descuentoAplicado < 0) descuentoAplicado = 0;
-    actualizarCarrito();
+// ==================== FUNCIONES DE FLUJO ====================
+
+function actualizarResumenPedido() {
+    const carritoData = obtenerCarrito(); // ← AHORA ESTÁ DEFINIDA
+    const resumenContainer = document.getElementById('resumen-pedido');
+    const tasa = parseFloat(document.getElementById('tasa-actual').value);
+    
+    let html = '';
+    let subtotal = 0;
+    
+    carritoData.forEach(item => {
+        subtotal += item.precio * item.cantidad;
+        html += `
+            <div class="producto-item">
+                <div class="producto-nombre">${item.nombre}</div>
+                <div class="producto-stock">En Stock: ${item.stock}</div>
+            </div>
+        `;
+    });
+    
+    const iva = subtotal * 0.16;
+    const totalUSD = subtotal + iva - descuentoAplicado;
+    const totalBS = totalUSD * tasa;
+    
+    resumenContainer.innerHTML = html;
+    document.getElementById('resumen-subtotal').textContent = formatearMoneda(subtotal);
+    document.getElementById('resumen-iva').textContent = formatearMoneda(iva);
+    document.getElementById('resumen-total-usd').textContent = formatearMoneda(totalUSD);
+    document.getElementById('resumen-total-bs').textContent = formatearMoneda(totalBS, "VES");
 }
 
+// Mostrar pantalla de pago
+function mostrarPasoPago() {
+    document.getElementById('paso-carrito').style.display = 'none';
+    document.getElementById('paso-pago').style.display = 'grid';
+    
+    // Actualizar resumen del pedido
+    actualizarResumenPedido();
+}
+
+// Volver al carrito
+function volverAlCarrito() {
+    document.getElementById('paso-pago').style.display = 'none';
+    document.getElementById('paso-carrito').style.display = 'grid';
+}
+
+// Actualizar carrito
 function actualizarCarrito() {
     const carritoVacio = document.getElementById('carrito-vacio');
     const contenidoCarrito = document.getElementById('contenido-carrito');
     const btnProcesar = document.getElementById('btn-procesar');
     const itemsCarrito = document.getElementById('items-carrito');
-    
+
     if (!carritoVacio || !contenidoCarrito || !btnProcesar || !itemsCarrito) {
         console.error('Elementos del carrito no encontrados');
         return;
     }
-    
+
     if (carrito.length === 0) {
         carritoVacio.style.display = 'block';
         contenidoCarrito.style.display = 'none';
         btnProcesar.disabled = true;
         return;
     }
-    
+
     carritoVacio.style.display = 'none';
     contenidoCarrito.style.display = 'block';
     btnProcesar.disabled = false;
-    
+
     let html = '';
     let subtotalUsd = 0;
-    
+
     carrito.forEach(producto => {
         const subtotalProducto = producto.precio * producto.cantidad;
         subtotalUsd += subtotalProducto;
@@ -189,16 +256,16 @@ function actualizarCarrito() {
         html += `
             <tr>
                 <td>${producto.nombre}</td>
-                <td>$${producto.precio.toFixed(2)}</td>
+                <td>${formatearMoneda(producto.precio)}</td>
                 <td>
                     <input type="number" 
-                           value="${producto.cantidad}" 
-                           min="1" 
-                           max="${producto.stock}"
-                           class="cantidad-input"
-                           onchange="actualizarCantidad(${producto.id}, this.value)">
+                        value="${producto.cantidad}" 
+                        min="1" 
+                        max="${producto.stock}"
+                        class="cantidad-input"
+                        onchange="actualizarCantidad(${producto.id}, this.value)">
                 </td>
-                <td>$${subtotalProducto.toFixed(2)}</td>
+                <td>${formatearMoneda(subtotalProducto)}</td>
                 <td>
                     <button onclick="eliminarDelCarrito(${producto.id})" 
                             class="btn btn-danger btn-sm">
@@ -208,23 +275,22 @@ function actualizarCarrito() {
             </tr>
         `;
     });
-    
+
     itemsCarrito.innerHTML = html;
-    
+
     // Calcular totales
     const ivaUsd = subtotalUsd * 0.16;
     const totalUsd = subtotalUsd + ivaUsd - descuentoAplicado;
     const totalBs = totalUsd * tasaDelDia;
-    
+
     // Actualizar interfaz
-    document.getElementById('subtotal-usd').textContent = `$${subtotalUsd.toFixed(2)}`;
-    document.getElementById('iva-usd').textContent = `$${ivaUsd.toFixed(2)}`;
-    document.getElementById('descuento-usd').textContent = `-$${descuentoAplicado.toFixed(2)}`;
-    document.getElementById('total-usd').textContent = `$${totalUsd.toFixed(2)}`;
-    document.getElementById('total-bs').textContent = `${totalBs.toFixed(2)} Bs`;
+    document.getElementById('subtotal-usd').textContent = formatearMoneda(subtotalUsd);
+    document.getElementById('iva-usd').textContent = formatearMoneda(ivaUsd);
+    document.getElementById('total-usd').textContent = formatearMoneda(totalUsd);
+    document.getElementById('total-bs').textContent = formatearMoneda(totalBs, "VES");
 }
 
-// Cargar clientes desde la base de datos
+// Cargar clientes desde la base de datos - COMENTADO TEMPORALMENTE
 async function cargarClientes() {
     try {
         const selectClientes = document.querySelector('select[name="id_cliente"]');
@@ -272,24 +338,25 @@ document.addEventListener('DOMContentLoaded', function() {
                 const resultado = await response.json();
                 
                 if (resultado.success) {
-                    alert(' Venta procesada exitosamente');
+                    alert('Venta procesada exitosamente');
                     // Reiniciar todo
                     carrito = [];
                     descuentoAplicado = 0;
                     this.reset();
                     actualizarCarrito();
-                    const descuentoInput = document.getElementById('descuento-input');
-                    if (descuentoInput) descuentoInput.value = '';
+                    
+                    // Volver al paso del carrito
+                    volverAlCarrito();
                     
                     // Ocultar referencia si estaba visible
                     const grupoReferencia = document.getElementById('grupo-referencia');
                     if (grupoReferencia) grupoReferencia.style.display = 'none';
                 } else {
-                    alert(' Error: ' + resultado.error);
+                    alert('Error: ' + resultado.error);
                 }
             } catch (error) {
                 console.error('Error:', error);
-                alert(' Error al procesar la venta');
+                alert('Error al procesar la venta');
             }
         });
     }
@@ -301,4 +368,6 @@ window.agregarAlCarrito = agregarAlCarrito;
 window.eliminarDelCarrito = eliminarDelCarrito;
 window.actualizarCantidad = actualizarCantidad;
 window.vaciarCarrito = vaciarCarrito;
-window.aplicarDescuento = aplicarDescuento;
+window.mostrarPasoPago = mostrarPasoPago;
+window.volverAlCarrito = volverAlCarrito;
+window.obtenerCarrito = obtenerCarrito;

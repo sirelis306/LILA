@@ -16,8 +16,8 @@ class VentasModel {
     }
 
     public function buscarProducto($busqueda) {
-        $stmt = $this->pdo->prepare("SELECT * FROM productos  WHERE (nombre LIKE ? OR id_producto = ?) AND activo = 1");
-        $stmt->execute(["%$busqueda%", $busqueda]);
+        $stmt = $this->pdo->prepare("SELECT * FROM productos WHERE (nombre_producto LIKE ? OR codigo_barras LIKE ? OR id_producto = ?)");
+        $stmt->execute(["%$busqueda%", "%$busqueda%", $busqueda]);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 

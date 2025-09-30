@@ -1,6 +1,6 @@
 <?php
 $flash = $_SESSION['flash'] ?? null; 
-unset($_SESSION['flash']);
+unset($_SESSION['flash']); 
 ?>
 <!DOCTYPE html>
 <html lang="es">
