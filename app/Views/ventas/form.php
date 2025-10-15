@@ -30,6 +30,11 @@ include __DIR__ . '/../shared/dashboard_layout.php';
                 <button onclick="buscarProducto()" class="btn btn-primary" style="width: 100%">
                     Buscar Producto
                 </button>
+            </div>    
+             
+            <!-- Resultados de búsqueda (existente) -->
+            <div id="resultados-busqueda" class="lista-productos">
+                <!-- Los resultados aparecerán aquí -->
             </div>
             
             <div id="resultados-busqueda" class="lista-productos">
@@ -56,9 +61,9 @@ include __DIR__ . '/../shared/dashboard_layout.php';
                     <thead>
                         <tr>
                             <th>Producto</th>
-                            <th>Precio</th>
+                            <th>Precio bs</th>
+                            <th>Precio usd</th>
                             <th>Cantidad</th>
-                            <th>Subtotal</th>
                             <th>Acción</th>
                         </tr>
                     </thead>
@@ -71,6 +76,10 @@ include __DIR__ . '/../shared/dashboard_layout.php';
                     <div class="total-fila">
                         <span>Subtotal USD:</span>
                         <span id="subtotal-usd">$0.00</span>
+                    </div>
+                    <div class="total-fila">
+                        <span>Subtotal BS:</span>
+                        <span id="subtotal-bs">0.00 Bs</span>
                     </div>
                     <div class="total-fila">
                         <span>IVA (16%):</span>
@@ -149,6 +158,11 @@ include __DIR__ . '/../shared/dashboard_layout.php';
                         <input type="radio" name="metodo_pago" value="pago_movil"> 
                         Pago Móvil
                     </label>
+
+                    <label class="metodo-opcion">
+                        <input type="radio" name="metodo_pago" value="tarjeta"> 
+                        Tarjeta
+                    </label>
                 </div>
 
                 <div id="grupo-referencia" class="referencia-pago-group" style="display: none;">
@@ -170,7 +184,7 @@ include __DIR__ . '/../shared/dashboard_layout.php';
                 <div style="display: flex; gap: 10px; margin-top: 20px;">
                     <button type="button" 
                             onclick="volverAlCarrito()" 
-                            class="btn btn-secondary" 
+                            class="btn-procesar-venta" 
                             style="flex: 1;">
                         Volver
                     </button>
@@ -191,6 +205,16 @@ include __DIR__ . '/../shared/dashboard_layout.php';
         <a href="<?= BASE_URL ?>?r=form-tasa" class="btn btn-primary">Gestionar Tasas</a>
     </div>
 <?php endif; ?>
+
+<!-- Modal de Notificación Personalizada -->
+<div id="stock-alert-modal" class="modal-personalizado" style="display: none;">
+    <div class="modal-contenido">
+        <span class="cerrar-modal" onclick="ocultarStockAlertModal()">&times;</span>
+        <h3 id="modal-titulo-stock">Stock Insuficiente</h3>
+        <p id="modal-mensaje-stock">No hay suficiente stock disponible para este producto.</p>
+        <button class="btn btn-primary" onclick="ocultarStockAlertModal()">Aceptar</button>
+    </div>
+</div>
 
 <?php include __DIR__ . '/../shared/dashboard_end.php'; ?>
 

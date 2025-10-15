@@ -25,6 +25,60 @@ class InventarioModel {
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
+    public function getProductosPaginados($busqueda = '', $pagina = 1, $porPagina = 10) {
+    $pagina = (int)$pagina;
+    $porPagina = (int)$porPagina;
+    $offset = ($pagina - 1) * $porPagina;
+    
+    // PRIMERO obtener el TOTAL (rápido)
+    $sqlCount = "SELECT COUNT(*) as total FROM productos WHERE 1=1";
+    $paramsCount = [];
+    
+    if ($busqueda) {
+        $sqlCount .= " AND (nombre_producto LIKE ? OR codigo_barras LIKE ?)";
+        $paramsCount[] = "%$busqueda%";
+        $paramsCount[] = "%$busqueda%";
+    }
+    
+    $stmtCount = $this->pdo->prepare($sqlCount);
+    $stmtCount->execute($paramsCount);
+    $total = $stmtCount->fetch(PDO::FETCH_ASSOC)['total'];
+    $totalPaginas = ceil($total / $porPagina);
+    
+    // Si no hay productos, retornar vacío
+    if ($total == 0) {
+        return [
+            'productos' => [],
+            'total' => 0,
+            'totalPaginas' => 0,
+            'paginaActual' => $pagina
+        ];
+    }
+    
+    // LUEGO obtener solo los productos de la página actual
+    $sql = "SELECT * FROM productos WHERE 1=1";
+    $params = [];
+    
+    if ($busqueda) {
+        $sql .= " AND (nombre_producto LIKE ? OR codigo_barras LIKE ?)";
+        $params[] = "%$busqueda%";
+        $params[] = "%$busqueda%";
+    }
+    
+    $sql .= " ORDER BY nombre_producto LIMIT $porPagina OFFSET $offset";
+    
+    $stmt = $this->pdo->prepare($sql);
+    $stmt->execute($params);
+    $productos = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    
+    return [
+        'productos' => $productos,
+        'total' => $total,
+        'totalPaginas' => $totalPaginas,
+        'paginaActual' => $pagina
+    ];
+}
+
     public function getProductoById($id) {
         $stmt = $this->pdo->prepare("SELECT * FROM productos WHERE id_producto = ?");
         $stmt->execute([$id]);
@@ -83,7 +137,7 @@ class InventarioModel {
 
     // Función para subir imagen
     public function subirImagen($archivo) {
-        $permitidos = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
+        $permitidos = ['jpg', 'jpeg', 'png'];
         $maxSize = 2 * 1024 * 1024; // 2MB
         
         // Validar tipo de archivo

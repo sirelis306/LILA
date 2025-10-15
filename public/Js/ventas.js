@@ -1,9 +1,27 @@
 // Variables globales
 let carrito = [];
-let tasaDelDia = typeof TASA_DEL_DIA !== 'undefined' ? TASA_DEL_DIA : 36.50;
-let descuentoAplicado = 0;
+let tasaDelDia;
 
-// ==================== FUNCIÓN QUE FALTABA ====================
+function mostrarStockAlertModal(mensaje, titulo = null) {
+    const tituloElement = document.getElementById('modal-titulo-stock');
+    const mensajeElement = document.getElementById('modal-mensaje-stock');
+    
+    // Si se proporciona un título, lo usamos; si no, dejamos el actual
+    if (titulo !== null) {
+        tituloElement.textContent = titulo;
+    }
+    mensajeElement.textContent = mensaje;
+    
+    document.getElementById('stock-alert-modal').style.display = 'flex'; 
+}
+
+function ocultarStockAlertModal() {
+    document.getElementById('stock-alert-modal').style.display = 'none';
+}
+
+// Hacer la función de ocultar disponible globalmente para el HTML
+window.ocultarStockAlertModal = ocultarStockAlertModal;
+
 function obtenerCarrito() {
     return carrito;
 }
@@ -25,7 +43,12 @@ function formatearMoneda(valor, moneda = "USD") {
 
 // Inicialización cuando el DOM esté listo
 document.addEventListener('DOMContentLoaded', function() {
-    console.log('Módulo de ventas cargado - Tasa:', tasaDelDia);
+    const tasaInput = document.getElementById('tasa-actual');
+    if (tasaInput) {
+        tasaDelDia = parseFloat(tasaInput.value) || 36.50;
+    } else {
+        tasaDelDia = 36.50;
+    }
     
     // Configurar método de pago
     const metodosPago = document.querySelectorAll('input[name="metodo_pago"]');
@@ -34,7 +57,7 @@ document.addEventListener('DOMContentLoaded', function() {
     if (metodosPago && grupoReferencia) {
         metodosPago.forEach(metodo => {
             metodo.addEventListener('change', function() {
-                const necesitaReferencia = ['transferencia', 'pago_movil'].includes(this.value);
+                const necesitaReferencia = ['transferencia', 'pago_movil', 'tarjeta'].includes(this.value);
                 grupoReferencia.style.display = necesitaReferencia ? 'block' : 'none';
             });
         });
@@ -58,7 +81,7 @@ document.addEventListener('DOMContentLoaded', function() {
 async function buscarProducto() {
     const busqueda = document.getElementById('buscar-producto').value.trim();
     if (!busqueda) {
-        alert('Ingrese un código o nombre de producto');
+        mostrarStockAlertModal('Por favor, ingrese un código o nombre de producto para buscar.');
         return;
     }
 
@@ -70,7 +93,7 @@ async function buscarProducto() {
         if (!contentType || !contentType.includes('application/json')) {
             const text = await response.text();
             console.error('Respuesta no JSON:', text.substring(0, 200));
-            alert('Error en el servidor. La búsqueda no está disponible.');
+            mostrarStockAlertModal('Error en el servidor. La búsqueda no está disponible o el producto no existe.');
             return;
         }
         
@@ -78,7 +101,7 @@ async function buscarProducto() {
         mostrarResultados(productos);
     } catch (error) {
         console.error('Error:', error);
-        alert('Error al buscar producto');
+        mostrarStockAlertModal('Error al buscar producto.');
     }
 }
 
@@ -100,12 +123,27 @@ function mostrarResultados(productos) {
     productos.forEach(producto => {
         const estaAgotado = producto.cantidad <= 0;
         const nombreSeguro = producto.nombre_producto.replace(/'/g, "\\'").replace(/"/g, '&quot;');
+        
+        // Construir URL de la imagen
+        const imagenUrl = producto.imagen 
+            ? `${BASE_URL}img/productos/${encodeURIComponent(producto.imagen)}`
+            : `${BASE_URL}img/productos/default.png`; // Imagen por defecto si no hay imagen
+
         html += `
             <div class="producto-item ${estaAgotado ? 'producto-agotado' : ''}" 
                 onclick="${estaAgotado ? '' : `agregarAlCarrito(${producto.id_producto}, '${nombreSeguro}', ${producto.precio_usd}, ${producto.cantidad})`}">
-                <div class="producto-nombre">${producto.nombre_producto}</div>
-                <div class="producto-precio">${formatearMoneda(producto.precio_usd)}</div>
-                <div class="producto-stock">Stock: ${producto.cantidad} ${estaAgotado ? '❌ Agotado' : '✅ Disponible'}</div>
+                
+                <!-- Imagen del producto -->
+                <div class="producto-imagen">
+                    <img src="${imagenUrl}" alt="${producto.nombre_producto}" onerror="this.src='${BASE_URL}img/default-product.png'">
+                </div>
+                
+                <!-- Datos del producto -->
+                <div class="producto-info">
+                    <div class="producto-nombre">${producto.nombre_producto}</div>
+                    <div class="producto-precio">${formatearMoneda(producto.precio_usd)}</div>
+                    <div class="producto-stock">Stock: ${producto.cantidad} ${estaAgotado ? '❌ Agotado' : '✅ Disponible'}</div>
+                </div>
             </div>
         `;
     });
@@ -116,15 +154,16 @@ function mostrarResultados(productos) {
 // Funciones del carrito
 function agregarAlCarrito(id, nombre, precio, stock) {
     if (stock <= 0) {
-        alert('Producto agotado');
+        mostrarStockAlertModal('Producto agotado. No se puede agregar al carrito.');
         return;
     }
 
     const productoExistente = carrito.find(p => p.id === id);
     
     if (productoExistente) {
-        if (productoExistente.cantidad >= stock) {
-            alert('No hay suficiente stock disponible');
+        // Incrementa la cantidad solo si no supera el stock disponible
+        if (productoExistente.cantidad + 1 > stock) {
+            mostrarStockAlertModal(`No se puede agregar más. Solo quedan ${stock} unidades de "${nombre}".`);
             return;
         }
         productoExistente.cantidad++;
@@ -134,7 +173,7 @@ function agregarAlCarrito(id, nombre, precio, stock) {
             nombre: nombre,
             precio: parseFloat(precio),
             cantidad: 1,
-            stock: parseInt(stock)
+            stock: parseInt(stock) // Guardamos el stock original disponible
         });
     }
     
@@ -147,40 +186,37 @@ function agregarAlCarrito(id, nombre, precio, stock) {
     if (resultadosDiv) resultadosDiv.innerHTML = '';
 }
 
-function eliminarDelCarrito(id) {
-    carrito = carrito.filter(p => p.id !== id);
-    actualizarCarrito();
-}
-
+// Modificación también en actualizarCantidad para el mismo chequeo
 function actualizarCantidad(id, nuevaCantidad) {
     const producto = carrito.find(p => p.id === id);
     if (producto) {
         nuevaCantidad = parseInt(nuevaCantidad);
-        if (nuevaCantidad > 0 && nuevaCantidad <= producto.stock) {
-            producto.cantidad = nuevaCantidad;
-            actualizarCarrito();
-        } else if (nuevaCantidad > producto.stock) {
-            alert('No hay suficiente stock disponible');
-            producto.cantidad = producto.stock;
-            actualizarCarrito();
-        } else if (nuevaCantidad <= 0) {
-            eliminarDelCarrito(id);
+        if (isNaN(nuevaCantidad) || nuevaCantidad <= 0) {
+            eliminarDelCarrito(id); // Si la cantidad es 0 o inválida, se elimina del carrito
+            return;
         }
+        
+        if (nuevaCantidad > producto.stock) {
+            mostrarStockAlertModal(`No hay suficiente stock disponible para "${producto.nombre}". Solo quedan ${producto.stock} unidades.`);
+            // Si la cantidad es mayor que el stock, se ajusta al máximo disponible
+            producto.cantidad = producto.stock; 
+        } else {
+            producto.cantidad = nuevaCantidad;
+        }
+        actualizarCarrito();
     }
 }
 
 function vaciarCarrito() {
     if (confirm('¿Estás seguro de vaciar el carrito?')) {
         carrito = [];
-        descuentoAplicado = 0;
+        // descuentoAplicado se ha eliminado
         actualizarCarrito();
     }
 }
 
-// ==================== FUNCIONES DE FLUJO ====================
-
 function actualizarResumenPedido() {
-    const carritoData = obtenerCarrito(); // ← AHORA ESTÁ DEFINIDA
+    const carritoData = obtenerCarrito(); 
     const resumenContainer = document.getElementById('resumen-pedido');
     const tasa = parseFloat(document.getElementById('tasa-actual').value);
     
@@ -192,14 +228,14 @@ function actualizarResumenPedido() {
         html += `
             <div class="producto-item">
                 <div class="producto-nombre">${item.nombre}</div>
-                <div class="producto-stock">En Stock: ${item.stock}</div>
+                <div class="producto-stock">Cantidad: ${item.cantidad} (Stock: ${item.stock})</div>
             </div>
         `;
     });
     
     const iva = subtotal * 0.16;
-    const totalUSD = subtotal + iva - descuentoAplicado;
-    const totalBS = totalUSD * tasa;
+    const totalUSD = subtotal + iva;
+    const totalBS = totalUSD * tasaDelDia;
     
     resumenContainer.innerHTML = html;
     document.getElementById('resumen-subtotal').textContent = formatearMoneda(subtotal);
@@ -250,13 +286,14 @@ function actualizarCarrito() {
     let subtotalUsd = 0;
 
     carrito.forEach(producto => {
-        const subtotalProducto = producto.precio * producto.cantidad;
-        subtotalUsd += subtotalProducto;
+        const precioBs = producto.precio * tasaDelDia;
+        const subtotalProductoUsd = producto.precio * producto.cantidad;
         
         html += `
             <tr>
                 <td>${producto.nombre}</td>
-                <td>${formatearMoneda(producto.precio)}</td>
+                <td>${formatearMoneda(precioBs, "VES")}</td> 
+                <td>${formatearMoneda(producto.precio)}</td> 
                 <td>
                     <input type="number" 
                         value="${producto.cantidad}" 
@@ -265,7 +302,6 @@ function actualizarCarrito() {
                         class="cantidad-input"
                         onchange="actualizarCantidad(${producto.id}, this.value)">
                 </td>
-                <td>${formatearMoneda(subtotalProducto)}</td>
                 <td>
                     <button onclick="eliminarDelCarrito(${producto.id})" 
                             class="btn btn-danger btn-sm">
@@ -279,15 +315,25 @@ function actualizarCarrito() {
     itemsCarrito.innerHTML = html;
 
     // Calcular totales
+    carrito.forEach(producto => {
+        subtotalUsd += producto.precio * producto.cantidad;
+    });
+    const subtotalBs = subtotalUsd * tasaDelDia;
     const ivaUsd = subtotalUsd * 0.16;
-    const totalUsd = subtotalUsd + ivaUsd - descuentoAplicado;
+    const totalUsd = subtotalUsd + ivaUsd;
     const totalBs = totalUsd * tasaDelDia;
 
     // Actualizar interfaz
     document.getElementById('subtotal-usd').textContent = formatearMoneda(subtotalUsd);
+    document.getElementById('subtotal-bs').textContent = formatearMoneda(subtotalBs, "VES");
     document.getElementById('iva-usd').textContent = formatearMoneda(ivaUsd);
     document.getElementById('total-usd').textContent = formatearMoneda(totalUsd);
     document.getElementById('total-bs').textContent = formatearMoneda(totalBs, "VES");
+}
+
+function eliminarDelCarrito(id) {
+    carrito = carrito.filter(p => p.id !== id);
+    actualizarCarrito();
 }
 
 // Cargar clientes desde la base de datos - COMENTADO TEMPORALMENTE
@@ -313,54 +359,55 @@ async function cargarClientes() {
 }
 
 // Procesar venta
-document.addEventListener('DOMContentLoaded', function() {
-    const formVenta = document.getElementById('form-venta');
-    if (formVenta) {
-        formVenta.addEventListener('submit', async function(e) {
-            e.preventDefault();
+const formVenta = document.getElementById('form-venta');
+if (formVenta) {
+    formVenta.addEventListener('submit', async function(e) {
+        e.preventDefault();
+        
+        if (carrito.length === 0) {
+            mostrarStockAlertModal('El carrito de compras está vacío. Agregue productos antes de procesar la venta.');
+            return;
+        }
+        
+        const formData = new FormData(this);
+        formData.append('carrito', JSON.stringify(carrito));
+        formData.append('tasa', tasaDelDia);
+        
+        try {
+            const response = await fetch(this.action, {
+                method: 'POST',
+                body: formData
+            });
             
-            if (carrito.length === 0) {
-                alert('El carrito está vacío');
+            // Intentar parsear como JSON directamente
+            let resultado;
+            try {
+                resultado = await response.json();
+            } catch (jsonError) {
+                const text = await response.text();
+                console.error('Error al parsear JSON del servidor:', text.substring(0, 500));
+                mostrarStockAlertModal('Error inesperado en el servidor. Por favor, intente de nuevo más tarde.');
                 return;
             }
             
-            const formData = new FormData(this);
-            formData.append('carrito', JSON.stringify(carrito));
-            formData.append('tasa', tasaDelDia);
-            formData.append('descuento', descuentoAplicado);
-            
-            try {
-                const response = await fetch(this.action, {
-                    method: 'POST',
-                    body: formData
-                });
-                
-                const resultado = await response.json();
-                
-                if (resultado.success) {
-                    alert('Venta procesada exitosamente');
-                    // Reiniciar todo
-                    carrito = [];
-                    descuentoAplicado = 0;
-                    this.reset();
-                    actualizarCarrito();
-                    
-                    // Volver al paso del carrito
-                    volverAlCarrito();
-                    
-                    // Ocultar referencia si estaba visible
-                    const grupoReferencia = document.getElementById('grupo-referencia');
-                    if (grupoReferencia) grupoReferencia.style.display = 'none';
-                } else {
-                    alert('Error: ' + resultado.error);
-                }
-            } catch (error) {
-                console.error('Error:', error);
-                alert('Error al procesar la venta');
+            if (resultado.success) {
+                mostrarStockAlertModal('Venta procesada exitosamente.', '✅ Éxito');
+                // Reiniciar todo
+                carrito = [];
+                this.reset();
+                actualizarCarrito();
+                volverAlCarrito();
+                const grupoReferencia = document.getElementById('grupo-referencia');
+                if (grupoReferencia) grupoReferencia.style.display = 'none';
+            } else {
+                mostrarStockAlertModal('Error al procesar la venta: ' + resultado.error);
             }
-        });
-    }
-});
+        } catch (error) {
+            console.error('Error:', error);
+            mostrarStockAlertModal('Error de conexión al procesar la venta. Intente de nuevo.');
+        }
+    });
+}
 
 // Hacer funciones disponibles globalmente
 window.buscarProducto = buscarProducto;

@@ -1,5 +1,7 @@
-// Funciones para manejar formularios de productos
+console.log('Inventario.js cargado');
+
 document.addEventListener('DOMContentLoaded', function() {
+    console.log('DOM cargado - Inicializando formulario');
     inicializarFormularioProductos();
 });
 
@@ -9,18 +11,27 @@ function inicializarFormularioProductos() {
 }
 
 function manejarPreciosConFormato() {
-    const precioInputs = document.querySelectorAll('.precio-input');
+    const precioBsInput = document.querySelector('input[name="precio_bs"]');
+    const precioUsdInput = document.querySelector('input[name="precio_usd"]');
+    const tasaInput = document.getElementById('tasa-del-dia');
     
-    if (precioInputs.length === 0) {
-        console.log('No se encontraron inputs de precio con la clase precio-input');
+    console.log('precioBsInput:', precioBsInput);
+    console.log('precioUsdInput:', precioUsdInput);
+    console.log('tasaInput:', tasaInput);
+
+    if (!precioBsInput || !precioUsdInput || !tasaInput) {
+        console.log('No se encontraron todos los inputs de precio o tasa.');
         return;
     }
-    
-    // Función para formatear número con coma decimal
+
+    let isUpdatingBs = false; // Bandera para evitar bucle en BS
+    let isUpdatingUsd = false; // Bandera para evitar bucle en USD
+
+    // Función para formatear número con coma decimal y 2 decimales
     function formatearPrecio(input) {
         let value = input.value.replace(/[^\d,]/g, '');
         
-        if (value === '' || value === '0') {
+        if (value === '') {
             input.value = '0,00';
             return;
         }
@@ -32,58 +43,122 @@ function manejarPreciosConFormato() {
         
         // Asegurar 2 decimales
         const partes = value.split(',');
-        if (partes[1]) {
-            partes[1] = partes[1].padEnd(2, '0').substring(0, 2);
-        } else {
-            partes[1] = '00';
-        }
+        let parteEntera = partes[0].replace(/^0+(?=\d)/, ''); // Eliminar ceros iniciales si no es '0'
+        if (parteEntera === '') parteEntera = '0'; // Asegurar que no quede vacío si solo había ceros
         
-        input.value = partes.join(',');
+        partes[1] = (partes[1] || '00').padEnd(2, '0').substring(0, 2);
+        
+        input.value = parteEntera + ',' + partes[1];
     }
-    
-    // Validar input en tiempo real
+
+    // Validar input en tiempo real (solo números y una coma)
     function validarInputPrecio(e) {
         const input = e.target;
         let value = input.value;
         
+        // Si el campo está vacío, permitirlo para borrar
+        if (value === '') return;
+        
         // Permitir solo números y una coma
         value = value.replace(/[^\d,]/g, '');
         
-        // Solo una coma
-        const comas = value.split(',').length - 1;
-        if (comas > 1) {
-            value = value.replace(/,$/, '');
+        // Asegurar que solo haya una coma
+        const partes = value.split(',');
+        if (partes.length > 2) {
+            value = partes[0] + ',' + partes.slice(1).join('');
+        }
+        
+        // Limitar a 2 decimales después de la coma
+        if (partes.length === 2 && partes[1].length > 2) {
+            value = partes[0] + ',' + partes[1].substring(0, 2);
         }
         
         input.value = value;
     }
-    
-    // Aplicar eventos
-    precioInputs.forEach(input => {
-        input.addEventListener('input', validarInputPrecio);
+
+    // Calcular precios en tiempo real
+    function calcularPrecios(sourceInput) {
+        const tasa = parseFloat(tasaInput.value) || 36.5;
+        
+        if (sourceInput === precioUsdInput && !isUpdatingUsd) {
+            // Se editó el campo USD
+            isUpdatingBs = true; // Establecer bandera para Bs
+            const usdRaw = precioUsdInput.value;
+            const usdValue = usdRaw ? parseFloat(usdRaw.replace(',', '.')) : 0;
+            const nuevoBs = (usdValue * tasa).toFixed(2).replace('.', ',');
+            
+            if (precioBsInput.value !== nuevoBs) { // Solo actualizar si es diferente para minimizar eventos
+                precioBsInput.value = nuevoBs;
+            }
+            isUpdatingBs = false; // Resetear bandera
+            
+        } else if (sourceInput === precioBsInput && !isUpdatingBs) {
+            // Se editó el campo Bs
+            isUpdatingUsd = true; // Establecer bandera para Usd
+            const bsRaw = precioBsInput.value;
+            const bsValue = bsRaw ? parseFloat(bsRaw.replace(',', '.')) : 0;
+            const nuevoUsd = (bsValue / tasa).toFixed(2).replace('.', ',');
+            
+            if (precioUsdInput.value !== nuevoUsd) { // Solo actualizar si es diferente
+                precioUsdInput.value = nuevoUsd;
+            }
+            isUpdatingUsd = false; // Resetear bandera
+        }
+    }
+
+    // Aplicar eventos a ambos inputs
+    [precioBsInput, precioUsdInput].forEach(input => {
+        // Evento 'input' para validación y cálculo en tiempo real
+        input.addEventListener('input', function() {
+            validarInputPrecio({target: this});
+            calcularPrecios(this); // Pasar el input que disparó el evento
+        });
+        
+        // Evento 'blur' para formatear el número final al salir del campo
         input.addEventListener('blur', function() {
             formatearPrecio(this);
         });
         
-        // Formatear al cargar la página
+        // Formatear al cargar la página (para valores iniciales)
         formatearPrecio(input);
     });
-    
+
+    // Escuchar cambios en la tasa del día si fuera interactiva
+    if (tasaInput) {
+        tasaInput.addEventListener('input', function() {
+            // Recalcular ambos si se cambia la tasa y alguno de los campos tiene valor
+            if (precioUsdInput.value !== '0,00') {
+                calcularPrecios(precioUsdInput);
+            } else if (precioBsInput.value !== '0,00') {
+                calcularPrecios(precioBsInput);
+            }
+        });
+    }
+
     // Procesar antes de enviar el formulario
     const form = document.querySelector('.producto-form');
     if (form) {
         form.addEventListener('submit', function(e) {
-            precioInputs.forEach(input => {
-                // Convertir 0,00 a 0.00 para el envío
+            // Convertir 0,00 a 0.00 para el envío
+            [precioBsInput, precioUsdInput].forEach(input => {
                 input.value = input.value.replace(',', '.');
             });
+            // Opcional: si la imagen actual se mantiene, y no se ha subido nueva, el input file debe estar deshabilitado
+            const mantenerImagenCheckbox = document.querySelector('input[name="mantener_imagen"]');
+            const fileInput = document.getElementById('file-input');
+            if (mantenerImagenCheckbox && mantenerImagenCheckbox.checked && fileInput && fileInput.files.length === 0) {
+                 fileInput.disabled = true; // Deshabilitar para que no se envíe vacío si no hay nueva imagen
+            }
         });
     }
 }
 
+// Las funciones manejarUploadImagen y mostrarVistaPrevia quedan como las tienes,
+// no interactúan directamente con la lógica de precios.
+// Solo agregar un pequeño ajuste en mostrarVistaPrevia si el fileInput.disabled se activó en submit
 function manejarUploadImagen() {
     const checkbox = document.querySelector('input[name="mantener_imagen"]');
-    const fileInput = document.getElementById('file-input'); // ← CAMBIADO
+    const fileInput = document.getElementById('file-input');
     const uploadBtn = document.querySelector('.btn-upload-image');
     
     if (!uploadBtn || !fileInput) {
@@ -94,18 +169,20 @@ function manejarUploadImagen() {
     // Checkbox para mantener imagen
     if (checkbox) {
         checkbox.addEventListener('change', function() {
-            fileInput.disabled = this.checked;
-            console.log('Checkbox cambiado. Input file disabled:', this.checked);
+            uploadBtn.style.opacity = this.checked ? '0.5' : '1';
+            uploadBtn.style.pointerEvents = this.checked ? 'none' : 'auto';
+            fileInput.disabled = this.checked; // Deshabilitar input file si se mantiene la imagen
         });
     }
     
-    // Botón de subir imagen - SOLO UN EVENTO
+    // Botón de subir imagen
     uploadBtn.addEventListener('click', function(e) {
         e.preventDefault();
-        if (!fileInput.disabled) {
-            fileInput.click();
-            console.log('Abriendo selector de archivos...');
+        // Si el checkbox está marcado o el input file está deshabilitado, no permitir subir
+        if (checkbox && checkbox.checked || fileInput.disabled) {
+            return;
         }
+        fileInput.click();
     });
     
     // Evento cuando se selecciona archivo
@@ -113,21 +190,31 @@ function manejarUploadImagen() {
         if (this.files.length > 0) {
             console.log('Imagen seleccionada:', this.files[0].name);
             mostrarVistaPrevia(this.files[0]);
+            // Desmarcar checkbox si existe y el input file se ha activado
+            if (checkbox && fileInput && !fileInput.disabled) {
+                checkbox.checked = false;
+                uploadBtn.style.opacity = '1';
+                uploadBtn.style.pointerEvents = 'auto';
+            }
         }
     });
+    // Inicializar estado del botón al cargar (si el checkbox está marcado)
+    if (checkbox && checkbox.checked) {
+        uploadBtn.style.opacity = '0.5';
+        uploadBtn.style.pointerEvents = 'none';
+        fileInput.disabled = true;
+    }
 }
 
 function mostrarVistaPrevia(file) {
     if (!file) return;
     
-    // Validar tipo de archivo
     const validTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
     if (!validTypes.includes(file.type)) {
         alert('Formato no válido. Use JPG, PNG, GIF o WebP.');
         return;
     }
     
-    // Validar tamaño (2MB)
     if (file.size > 2 * 1024 * 1024) {
         alert('La imagen es muy grande. Máximo 2MB.');
         return;
@@ -136,28 +223,41 @@ function mostrarVistaPrevia(file) {
     const reader = new FileReader();
     reader.onload = function(e) {
         const imagePreview = document.getElementById('image-preview');
-        const currentImage = document.querySelector('.current-image');
+        let currentImage = document.querySelector('.current-image');
+        
+        if (!currentImage && imagePreview) { // Si no hay imagen actual, creamos una para la vista previa
+            currentImage = document.createElement('img');
+            currentImage.className = 'current-image';
+            currentImage.style.width = '100px';
+            currentImage.style.height = '100px';
+            currentImage.style.objectFit = 'cover';
+            currentImage.style.borderRadius = '8px';
+            currentImage.style.marginBottom = '20px';
+            imagePreview.parentNode.insertBefore(currentImage, imagePreview.nextSibling); // Insertar después del placeholder
+        }
         
         if (currentImage) {
-            // Si ya hay una imagen, reemplazarla
             currentImage.src = e.target.result;
-        } else if (imagePreview) {
-            // Si hay contenedor de preview, actualizarlo
-            imagePreview.innerHTML = `
-                <img src="${e.target.result}" alt="Vista previa" 
-                     style="width: 100px; height: 100px; object-fit: cover; border-radius: 8px;">
-                <div style="font-size: 12px; color: #666; margin-top: 5px;">Vista previa</div>
-            `;
+            currentImage.alt = "Vista previa";
+            // Asegurarse de que el placeholder original desaparezca o se ajuste si se prefiere
+            if (imagePreview && imagePreview.querySelector('i')) {
+                 imagePreview.querySelector('i').style.display = 'none';
+            }
         }
         
-        // Desmarcar "Mantener imagen actual" si está marcado
         const mantenerCheckbox = document.querySelector('input[name="mantener_imagen"]');
-        if (mantenerCheckbox && mantenerCheckbox.checked) {
+        const fileInput = document.getElementById('file-input');
+        const uploadBtn = document.querySelector('.btn-upload-image');
+
+        if (mantenerCheckbox) {
             mantenerCheckbox.checked = false;
-            const fileInput = document.getElementById('file-input');
+            // Asegúrate de re-habilitar el botón de subir si se desmarca el checkbox
+            if (uploadBtn) {
+                uploadBtn.style.opacity = '1';
+                uploadBtn.style.pointerEvents = 'auto';
+            }
             if (fileInput) fileInput.disabled = false;
         }
-        
         console.log('Vista previa mostrada correctamente');
     };
     
@@ -169,5 +269,4 @@ function mostrarVistaPrevia(file) {
     reader.readAsDataURL(file);
 }
 
-// Hacer funciones disponibles globalmente
 window.mostrarVistaPrevia = mostrarVistaPrevia;

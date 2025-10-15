@@ -5,15 +5,24 @@ include __DIR__ . '/../shared/dashboard_layout.php';
 
 <?php include __DIR__ . '/../shared/flash.php'; ?>
 
-        <!-- Barra de búsqueda y acciones -->
+<div class="content-body">
+    <div class="container">
+        <!-- Barra de búsqueda y acciones CORREGIDA -->
         <div class="search-actions-bar">
-            <div class="search-input-group">
-                <input type="text" name="q" value="<?= htmlspecialchars($_GET['q'] ?? '') ?>" 
-                       placeholder="Buscar por nombre o código..." class="form-input">
-                <button type="submit" class="search-button">
-                    <i class="fi fi-rr-search"></i>
-                </button>
-            </div>
+            <!-- FORMULARIO DE BÚSQUEDA -->
+            <form method="GET" action="<?= BASE_URL ?>" class="search-form">
+                <input type="hidden" name="r" value="inventario">
+                <div class="search-input-group">
+                    <input type="text" 
+                        name="q" 
+                        value="<?= htmlspecialchars($_GET['q'] ?? '') ?>" 
+                        placeholder="Buscar por nombre o código" 
+                        class="form-input">
+                    <button type="submit" class="search-button">
+                        <i class="fi fi-rr-search"></i>
+                    </button>
+                </div>
+            </form>
             
             <a href="<?= BASE_URL ?>?r=form-producto" class="btn-agregar-producto">
                 <i class="fi fi-rr-add"></i> Agregar Producto
@@ -102,6 +111,49 @@ include __DIR__ . '/../shared/dashboard_layout.php';
                         <?php endforeach; ?>
                     </tbody>
                 </table>
+
+                <!-- PAGINADOR - AGREGAR DESPUÉS DE LA TABLA -->
+                <?php if (!empty($productos) && isset($totalPaginas) && $totalPaginas > 1): ?>
+                <div class="paginador-container">
+                    <div class="paginador-info">
+                        Mostrando <?= count($productos) ?> de <?= $totalProductos ?> productos
+                    </div>
+                    
+                    <div class="paginador-botones">
+                        <!-- Botón Anterior -->
+                        <?php if ($paginaActual > 1): ?>
+                            <a href="<?= BASE_URL ?>?r=inventario&pagina=<?= $paginaActual - 1 ?>&q=<?= urlencode($_GET['q'] ?? '') ?>" 
+                               class="btn-pagina btn-pagina-anterior">
+                                <i class="fi fi-rr-arrow-left"></i> Anterior
+                            </a>
+                        <?php endif; ?>
+                        
+                        <!-- Números de página -->
+                        <?php 
+                        // Mostrar máximo 5 páginas alrededor de la actual
+                        $inicio = max(1, $paginaActual - 2);
+                        $fin = min($totalPaginas, $paginaActual + 2);
+                        
+                        for ($i = $inicio; $i <= $fin; $i++): ?>
+                            <?php if ($i == $paginaActual): ?>
+                                <span class="btn-pagina btn-pagina-actual"><?= $i ?></span>
+                            <?php else: ?>
+                                <a href="<?= BASE_URL ?>?r=inventario&pagina=<?= $i ?>&q=<?= urlencode($_GET['q'] ?? '') ?>" 
+                                   class="btn-pagina"><?= $i ?></a>
+                            <?php endif; ?>
+                        <?php endfor; ?>
+                        
+                        <!-- Botón Siguiente -->
+                        <?php if ($paginaActual < $totalPaginas): ?>
+                            <a href="<?= BASE_URL ?>?r=inventario&pagina=<?= $paginaActual + 1 ?>&q=<?= urlencode($_GET['q'] ?? '') ?>" 
+                               class="btn-pagina btn-pagina-siguiente">
+                                Siguiente <i class="fi fi-rr-arrow-right"></i>
+                            </a>
+                        <?php endif; ?>
+                    </div>
+                </div>
+                <?php endif; ?>
+                
             <?php endif; ?>
         </div>
     </div>

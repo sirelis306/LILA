@@ -26,11 +26,6 @@ include __DIR__ . '/../shared/dashboard_layout.php';
                     <i class="fi fi-rr-upload"></i> Subir Imagen
                 </label>
 
-                <!-- INPUT FILE SEPARADO - EVITA DOBLE APERTURA -->
-                <input type="file" name="imagen" id="file-input" accept="image/*" 
-                       style="display: none;"
-                       <?= ($esEdicion && !empty($producto['imagen'])) ? 'disabled' : '' ?>>
-
                 <?php if ($esEdicion && !empty($producto['imagen'])): ?>
                     <label class="checkbox-label">
                         <input type="checkbox" name="mantener_imagen" value="1" checked>
@@ -47,6 +42,11 @@ include __DIR__ . '/../shared/dashboard_layout.php';
                 <form method="POST" action="<?= BASE_URL ?>?r=guardar-producto" enctype="multipart/form-data" class="producto-form">
                     <?php if ($esEdicion): ?>
                         <input type="hidden" name="id_producto" value="<?= $producto['id_producto'] ?>">
+                    <?php endif; ?>
+
+                    <input type="file" name="imagen" id="file-input" accept="image/*" style="display: none;">
+                    <?php if ($esEdicion && !empty($producto['imagen'])): ?>
+                        <input type="hidden" name="imagen_actual" value="<?= $producto['imagen'] ?>">
                     <?php endif; ?>
 
                     <div class="form-grid" style="gap: 15px; margin-bottom: 10px;">
@@ -103,6 +103,8 @@ include __DIR__ . '/../shared/dashboard_layout.php';
                                 required placeholder="0,00">
                         </div>
                     </div>
+
+                    <input type="hidden" id="tasa-del-dia" value="<?= $tasaHoy['tasa'] ?? '36.5' ?>">
 
                     <div class="form-actions-bottom">
                         <button type="submit" class="btn btn-primary">
