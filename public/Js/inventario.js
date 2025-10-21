@@ -143,7 +143,6 @@ function manejarPreciosConFormato() {
             [precioBsInput, precioUsdInput].forEach(input => {
                 input.value = input.value.replace(',', '.');
             });
-            // Opcional: si la imagen actual se mantiene, y no se ha subido nueva, el input file debe estar deshabilitado
             const mantenerImagenCheckbox = document.querySelector('input[name="mantener_imagen"]');
             const fileInput = document.getElementById('file-input');
             if (mantenerImagenCheckbox && mantenerImagenCheckbox.checked && fileInput && fileInput.files.length === 0) {
@@ -153,9 +152,6 @@ function manejarPreciosConFormato() {
     }
 }
 
-// Las funciones manejarUploadImagen y mostrarVistaPrevia quedan como las tienes,
-// no interactúan directamente con la lógica de precios.
-// Solo agregar un pequeño ajuste en mostrarVistaPrevia si el fileInput.disabled se activó en submit
 function manejarUploadImagen() {
     const checkbox = document.querySelector('input[name="mantener_imagen"]');
     const fileInput = document.getElementById('file-input');
@@ -223,9 +219,16 @@ function mostrarVistaPrevia(file) {
     const reader = new FileReader();
     reader.onload = function(e) {
         const imagePreview = document.getElementById('image-preview');
-        let currentImage = document.querySelector('.current-image');
+        const currentImageContainer = document.getElementById('current-image-container');
         
-        if (!currentImage && imagePreview) { // Si no hay imagen actual, creamos una para la vista previa
+        // Ocultar el placeholder
+        if (imagePreview) {
+            imagePreview.style.display = 'none';
+        }
+        
+        // Crear o actualizar la imagen
+        let currentImage = currentImageContainer.querySelector('.current-image');
+        if (!currentImage) {
             currentImage = document.createElement('img');
             currentImage.className = 'current-image';
             currentImage.style.width = '100px';
@@ -233,31 +236,26 @@ function mostrarVistaPrevia(file) {
             currentImage.style.objectFit = 'cover';
             currentImage.style.borderRadius = '8px';
             currentImage.style.marginBottom = '20px';
-            imagePreview.parentNode.insertBefore(currentImage, imagePreview.nextSibling); // Insertar después del placeholder
+            currentImageContainer.appendChild(currentImage);
         }
         
-        if (currentImage) {
-            currentImage.src = e.target.result;
-            currentImage.alt = "Vista previa";
-            // Asegurarse de que el placeholder original desaparezca o se ajuste si se prefiere
-            if (imagePreview && imagePreview.querySelector('i')) {
-                 imagePreview.querySelector('i').style.display = 'none';
-            }
-        }
+        currentImage.src = e.target.result;
+        currentImage.alt = "Vista previa";
         
+        // Manejar el checkbox de mantener imagen
         const mantenerCheckbox = document.querySelector('input[name="mantener_imagen"]');
         const fileInput = document.getElementById('file-input');
         const uploadBtn = document.querySelector('.btn-upload-image');
 
         if (mantenerCheckbox) {
             mantenerCheckbox.checked = false;
-            // Asegúrate de re-habilitar el botón de subir si se desmarca el checkbox
             if (uploadBtn) {
                 uploadBtn.style.opacity = '1';
                 uploadBtn.style.pointerEvents = 'auto';
             }
             if (fileInput) fileInput.disabled = false;
         }
+        
         console.log('Vista previa mostrada correctamente');
     };
     
@@ -267,6 +265,24 @@ function mostrarVistaPrevia(file) {
     };
     
     reader.readAsDataURL(file);
+}
+
+// Función para inicializar la vista de imagen al cargar la página
+function inicializarVistaImagen() {
+    const currentImage = document.querySelector('#current-image-container .current-image');
+    const imagePreview = document.getElementById('image-preview');
+    
+    // Si hay una imagen actual, ocultar el placeholder
+    if (currentImage && imagePreview) {
+        imagePreview.style.display = 'none';
+    }
+}
+
+// Modificar la función inicializadora para incluir la inicialización de imagen
+function inicializarFormularioProductos() {
+    manejarPreciosConFormato();
+    manejarUploadImagen();
+    inicializarVistaImagen(); // ← Agregar esta línea
 }
 
 window.mostrarVistaPrevia = mostrarVistaPrevia;

@@ -10,13 +10,17 @@ class InventarioController {
 
         $model = new InventarioModel();
         $busqueda = $_GET['q'] ?? '';
+        $categoria = $_GET['categoria'] ?? '';
+
+         // Obtener categorías únicas
+        $categorias = $model->getCategorias();
         
         // Configurar paginación
         $paginaActual = isset($_GET['pagina']) ? max(1, intval($_GET['pagina'])) : 1;
         $productosPorPagina = 10; // Ajusta según necesites
         
         // Obtener productos paginados
-        $resultado = $model->getProductosPaginados($busqueda, $paginaActual, $productosPorPagina);
+        $resultado = $model->getProductosPaginados($busqueda, $paginaActual, $productosPorPagina, $categoria);
         $productos = $resultado['productos'];
         $totalProductos = $resultado['total'];
         $totalPaginas = $resultado['totalPaginas'];
@@ -100,6 +104,7 @@ class InventarioController {
             'nombre_producto' => $_POST['nombre_producto'],
             'descripcion' => $_POST['descripcion'],
             'tamano' => $_POST['tamano'],
+            'categoria' => $_POST['categoria'] ?? 'General',
             'cantidad' => $_POST['cantidad'],
             'codigo_barras' => $_POST['codigo_barras'],
             'precio_bs' => $_POST['precio_bs'],

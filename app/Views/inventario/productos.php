@@ -7,12 +7,12 @@ include __DIR__ . '/../shared/dashboard_layout.php';
 
 <div class="content-body">
     <div class="container">
-        <!-- Barra de búsqueda y acciones CORREGIDA -->
+        <!-- Barra de búsqueda y acciones -->
         <div class="search-actions-bar">
-            <!-- FORMULARIO DE BÚSQUEDA -->
             <form method="GET" action="<?= BASE_URL ?>" class="search-form">
                 <input type="hidden" name="r" value="inventario">
-                <div class="search-input-group">
+
+                <div class="form-group-container" style="flex-grow: 1;">
                     <input type="text" 
                         name="q" 
                         value="<?= htmlspecialchars($_GET['q'] ?? '') ?>" 
@@ -21,6 +21,17 @@ include __DIR__ . '/../shared/dashboard_layout.php';
                     <button type="submit" class="search-button">
                         <i class="fi fi-rr-search"></i>
                     </button>
+                </div>
+
+                <div class="form-group-container select-wrapper">
+                    <select name="categoria" onchange="this.form.submit()">
+                        <option value="">Todas las categorías</option>
+                        <?php foreach ($categorias as $cat): ?>
+                            <option value="<?= htmlspecialchars($cat) ?>" <?= ($_GET['categoria'] ?? '') == $cat ? 'selected' : '' ?>>
+                                <?= htmlspecialchars($cat) ?>
+                            </option>
+                        <?php endforeach; ?>
+                    </select>
                 </div>
             </form>
             
@@ -43,6 +54,7 @@ include __DIR__ . '/../shared/dashboard_layout.php';
                             <th>Producto</th>
                             <th>Tamaño</th>
                             <th>Stock</th>
+                            <th>Categoría</th>
                             <th>Precio BS</th>
                             <th>Precio USD</th>
                             <th>Código</th>
@@ -83,6 +95,7 @@ include __DIR__ . '/../shared/dashboard_layout.php';
                                         <span class="stock-agotado">Agotado</span>
                                     <?php endif; ?>
                                 </td>
+                                <td><?= htmlspecialchars($producto['categoria']) ?></td>
                                 <td>
                                     <span class="precio-inventario">
                                         <?= number_format($producto['precio_bs'], 2, ',', '.') ?> Bs

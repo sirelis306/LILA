@@ -25,7 +25,12 @@ class InventarioModel {
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    public function getProductosPaginados($busqueda = '', $pagina = 1, $porPagina = 10) {
+    public function getCategorias() {
+        $stmt = $this->pdo->query("SELECT DISTINCT categoria FROM productos ORDER BY categoria");
+        return $stmt->fetchAll(PDO::FETCH_COLUMN);
+    }
+
+    public function getProductosPaginados($busqueda = '', $pagina = 1, $porPagina = 10, $categoria = '') {
     $pagina = (int)$pagina;
     $porPagina = (int)$porPagina;
     $offset = ($pagina - 1) * $porPagina;
@@ -38,6 +43,11 @@ class InventarioModel {
         $sqlCount .= " AND (nombre_producto LIKE ? OR codigo_barras LIKE ?)";
         $paramsCount[] = "%$busqueda%";
         $paramsCount[] = "%$busqueda%";
+    }
+
+    if ($categoria) {
+        $sqlCount .= " AND categoria = ?";
+        $paramsCount[] = $categoria;
     }
     
     $stmtCount = $this->pdo->prepare($sqlCount);
@@ -63,6 +73,11 @@ class InventarioModel {
         $sql .= " AND (nombre_producto LIKE ? OR codigo_barras LIKE ?)";
         $params[] = "%$busqueda%";
         $params[] = "%$busqueda%";
+    }
+
+    if ($categoria) {
+        $sql .= " AND categoria = ?";
+        $params[] = $categoria;
     }
     
     $sql .= " ORDER BY nombre_producto LIMIT $porPagina OFFSET $offset";
@@ -94,32 +109,31 @@ class InventarioModel {
         }
 
         $sql = "UPDATE productos SET 
-                nombre_producto = ?, descripcion = ?, tamano = ?, 
+                nombre_producto = ?, descripcion = ?, tamano = ?, categoria = ?,
                 cantidad = ?, codigo_barras = ?, precio_bs = ?, precio_usd = ?, 
                 imagen = ? 
                 WHERE id_producto = ?";
 
         $stmt = $this->pdo->prepare($sql);
         return $stmt->execute([
-            $datos['nombre_producto'], $datos['descripcion'], $datos['tamano'],
+            $datos['nombre_producto'], $datos['descripcion'], $datos['tamano'], $datos['categoria'],
             $datos['cantidad'], $datos['codigo_barras'], $datos['precio_bs'],
             $datos['precio_usd'], $datos['imagen'], $datos['id_producto']
         ]);
         
     } else {
         $sql = "INSERT INTO productos 
-                (nombre_producto, descripcion, tamano, cantidad, codigo_barras, precio_bs, precio_usd, imagen) 
+                (nombre_producto, descripcion, tamano, categoria, cantidad, codigo_barras, precio_bs, precio_usd, imagen) 
                 VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 
         $stmt = $this->pdo->prepare($sql);
         return $stmt->execute([
-            $datos['nombre_producto'], $datos['descripcion'], $datos['tamano'],
+            $datos['nombre_producto'], $datos['descripcion'], $datos['tamano'], $datos['categoria'],
             $datos['cantidad'], $datos['codigo_barras'], $datos['precio_bs'],
             $datos['precio_usd'], $datos['imagen']
         ]);
     }
 }
-
 
     public function eliminarProducto($id) {
         // Primero obtener info de la imagen para eliminarla

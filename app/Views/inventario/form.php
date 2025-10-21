@@ -17,10 +17,15 @@ include __DIR__ . '/../shared/dashboard_layout.php';
                     <i class="fi fi-rr-camera"></i>
                 </div>
                 
-                <?php if ($esEdicion && !empty($producto['imagen'])): ?>
-                    <img src="<?= BASE_URL ?>img/productos/<?= $producto['imagen'] ?>" 
-                         alt="Imagen actual" class="current-image" style="width: 100px; height: 100px; object-fit: cover; border-radius: 8px; margin-bottom: 20px;">
-                <?php endif; ?>
+                <!-- Contenedor para la imagen actual/vista previa -->
+                <div id="current-image-container">
+                    <?php if ($esEdicion && !empty($producto['imagen'])): ?>
+                        <img src="<?= BASE_URL . 'img/productos/' . $producto['imagen'] ?>" 
+                            alt="Imagen actual del producto" 
+                            class="current-image"
+                            style="width: 100px; height: 100px; object-fit: cover; border-radius: 8px; margin-bottom: 20px;">
+                    <?php endif; ?>
+                </div>
 
                 <label for="file-input" class="btn-upload-image">
                     <i class="fi fi-rr-upload"></i> Subir Imagen
@@ -35,7 +40,7 @@ include __DIR__ . '/../shared/dashboard_layout.php';
                 <?php endif; ?>
 
                 <small class="form-text-small">Formatos: JPG, PNG (Máx. 2MB)</small>
-            </div>
+        </div>
 
             <!-- Contenido Principal del Formulario -->
             <div class="main-form-content">
@@ -50,19 +55,30 @@ include __DIR__ . '/../shared/dashboard_layout.php';
                     <?php endif; ?>
 
                     <div class="form-grid" style="gap: 15px; margin-bottom: 10px;">
-                        <!-- Fila 1: Nombre + Código -->
-                        <div class="form-group" style="margin-bottom: 10px;">
-                            <label class="form-label">Nombre del Producto *</label>
-                            <input type="text" name="nombre_producto" class="form-input" 
-                                value="<?= htmlspecialchars($producto['nombre_producto'] ?? '') ?>" 
-                                required maxlength="50">
-                        </div>
+                        <!-- Fila 1: Nombre + Código + stock -->
+                        <div class="form-full-width">
+                            <div class="form-row-triple">
+                                <div class="form-group">
+                                    <label class="form-label">Nombre del Producto</label>
+                                    <input type="text" name="nombre_producto" class="form-input" 
+                                        value="<?= htmlspecialchars($producto['nombre_producto'] ?? '') ?>" 
+                                        required maxlength="50">
+                                </div>
 
-                        <div class="form-group">
-                            <label class="form-label">Código de Barras *</label>
-                            <input type="text" name="codigo_barras" class="form-input" 
-                                value="<?= htmlspecialchars($producto['codigo_barras'] ?? '') ?>" 
-                                required maxlength="20">
+                                <div class="form-group">
+                                    <label class="form-label">Código de Barras</label>
+                                    <input type="text" name="codigo_barras" class="form-input" 
+                                        value="<?= htmlspecialchars($producto['codigo_barras'] ?? '') ?>" 
+                                        required maxlength="20">
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="form-label">Stock Inicial</label>
+                                    <input type="number" name="cantidad" class="form-input" 
+                                        value="<?= $producto['cantidad'] ?? '0' ?>" 
+                                        min="0" required>
+                                </div>
+                            </div>
                         </div>
 
                         <!-- Fila 2: Descripción (ocupa 2 columnas) -->
@@ -72,7 +88,7 @@ include __DIR__ . '/../shared/dashboard_layout.php';
                                     maxlength="300"><?= htmlspecialchars($producto['descripcion'] ?? '') ?></textarea>
                         </div>
 
-                        <!-- Fila 3: Tamaño + Stock -->
+                        <!-- Fila 3: Tamaño + Categoría -->
                         <div class="form-group">
                             <label class="form-label">Tamaño</label>
                             <input type="text" name="tamano" class="form-input" 
@@ -81,23 +97,27 @@ include __DIR__ . '/../shared/dashboard_layout.php';
                         </div>
 
                         <div class="form-group">
-                            <label class="form-label">Stock Inicial *</label>
-                            <input type="number" name="cantidad" class="form-input" 
-                                value="<?= $producto['cantidad'] ?? '0' ?>" 
-                                min="0" required>
-                            <small class="form-text-small">Cantidad disponible en inventario</small>
+                            <label class="form-label">Categoría</label>
+                            <input type="text" name="categoria" class="form-input" 
+                                list="categorias-sugeridas"
+                                value="<?= htmlspecialchars($producto['categoria'] ?? 'General') ?>"
+                                placeholder="Ej: Alimentos, Bebidas, etc.">
+                            
+                            <datalist id="categorias-sugeridas">
+                                <option value="General">
+                            </datalist>
                         </div>
 
-                        <!-- Fila 4: Precios CON CLASE precio-input -->
+                        <!-- Fila 4: Precios -->
                         <div class="form-group">
-                            <label class="form-label">Precio en Bolívares *</label>
+                            <label class="form-label">Precio en Bolívares</label>
                             <input type="text" name="precio_bs" class="form-input precio-input" 
                                 value="<?= isset($producto['precio_bs']) ? number_format($producto['precio_bs'], 2, ',', '.') : '0,00' ?>" 
                                 required placeholder="0,00">
                         </div>
 
                         <div class="form-group">
-                            <label class="form-label">Precio en Dólares *</label>
+                            <label class="form-label">Precio en Dólares</label>
                             <input type="text" name="precio_usd" class="form-input precio-input" 
                                 value="<?= isset($producto['precio_usd']) ? number_format($producto['precio_usd'], 2, ',', '.') : '0,00' ?>" 
                                 required placeholder="0,00">

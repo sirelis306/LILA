@@ -15,7 +15,7 @@ unset($_SESSION['flash']);
         <div class="login-container">
             <div class="login-card">
                 <div class="login-logo">
-                    <h1>Sistema LILA</h1>
+                    <h2>Sistema LILA</h2>
                     <p>Cristalería y Aluminios Hermanos Soler C.A</p>
                 </div>
                 

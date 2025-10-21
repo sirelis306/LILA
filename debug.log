@@ -197,3 +197,335 @@
     [imagen] => 
 )
 
+[2025-10-17 03:49:26] === INICIO DE GUARDAR PRODUCTO ===
+[2025-10-17 03:49:26] POST: Array
+(
+    [id_producto] => 4
+    [nombre_producto] =>  Cristal
+    [codigo_barras] => 2345678
+    [descripcion] => Vaso Cristal
+    [tamano] => Mediano
+    [categoria] => General
+    [cantidad] => 9
+    [precio_bs] => 1200.00
+    [precio_usd] => 10.00
+)
+
+[2025-10-17 03:49:26] FILES: Array
+(
+    [imagen] => Array
+        (
+            [name] => 
+            [full_path] => 
+            [type] => 
+            [tmp_name] => 
+            [error] => 4
+            [size] => 0
+        )
+
+)
+
+[2025-10-17 03:49:26] ⚠️ No se subió imagen ni se mantuvo la actual.
+[2025-10-17 03:49:26] Datos a guardar: Array
+(
+    [id_producto] => 4
+    [nombre_producto] =>  Cristal
+    [descripcion] => Vaso Cristal
+    [tamano] => Mediano
+    [categoria] => General
+    [cantidad] => 9
+    [codigo_barras] => 2345678
+    [precio_bs] => 1200.00
+    [precio_usd] => 10.00
+    [imagen] => 
+)
+
+[2025-10-17 03:58:57] === INICIO DE GUARDAR PRODUCTO ===
+[2025-10-17 03:58:57] POST: Array
+(
+    [id_producto] => 4
+    [nombre_producto] =>  Cristal
+    [codigo_barras] => 2345678
+    [descripcion] => Vaso Cristal
+    [tamano] => Mediano
+    [categoria] => cristal
+    [cantidad] => 9
+    [precio_bs] => 1200.00
+    [precio_usd] => 10.00
+)
+
+[2025-10-17 03:58:57] FILES: Array
+(
+    [imagen] => Array
+        (
+            [name] => 
+            [full_path] => 
+            [type] => 
+            [tmp_name] => 
+            [error] => 4
+            [size] => 0
+        )
+
+)
+
+[2025-10-17 03:58:57] ⚠️ No se subió imagen ni se mantuvo la actual.
+[2025-10-17 03:58:57] Datos a guardar: Array
+(
+    [id_producto] => 4
+    [nombre_producto] =>  Cristal
+    [descripcion] => Vaso Cristal
+    [tamano] => Mediano
+    [categoria] => cristal
+    [cantidad] => 9
+    [codigo_barras] => 2345678
+    [precio_bs] => 1200.00
+    [precio_usd] => 10.00
+    [imagen] => 
+)
+
+[2025-10-17 03:59:24] === INICIO DE GUARDAR PRODUCTO ===
+[2025-10-17 03:59:24] POST: Array
+(
+    [id_producto] => 4
+    [nombre_producto] =>  Cristal
+    [codigo_barras] => 2345678
+    [descripcion] => Vaso Cristal
+    [tamano] => Mediano
+    [categoria] => Cristal
+    [cantidad] => 9
+    [precio_bs] => 1200.00
+    [precio_usd] => 10.00
+)
+
+[2025-10-17 03:59:24] FILES: Array
+(
+    [imagen] => Array
+        (
+            [name] => 
+            [full_path] => 
+            [type] => 
+            [tmp_name] => 
+            [error] => 4
+            [size] => 0
+        )
+
+)
+
+[2025-10-17 03:59:24] ⚠️ No se subió imagen ni se mantuvo la actual.
+[2025-10-17 03:59:24] Datos a guardar: Array
+(
+    [id_producto] => 4
+    [nombre_producto] =>  Cristal
+    [descripcion] => Vaso Cristal
+    [tamano] => Mediano
+    [categoria] => Cristal
+    [cantidad] => 9
+    [codigo_barras] => 2345678
+    [precio_bs] => 1200.00
+    [precio_usd] => 10.00
+    [imagen] => 
+)
+
+[2025-10-17 03:59:48] === INICIO DE GUARDAR PRODUCTO ===
+[2025-10-17 03:59:48] POST: Array
+(
+    [id_producto] => 1
+    [imagen_actual] => 68eb218e3f25e.png
+    [nombre_producto] => Jarra
+    [codigo_barras] => 12345678
+    [descripcion] => Jarra de Vidrio
+    [tamano] => Mediano
+    [categoria] => cristal
+    [cantidad] => 1
+    [precio_bs] => 2400.00
+    [precio_usd] => 20.00
+)
+
+[2025-10-17 03:59:48] FILES: Array
+(
+)
+
+[2025-10-17 03:59:48] ⚠️ No se subió imagen ni se mantuvo la actual.
+[2025-10-17 03:59:48] Datos a guardar: Array
+(
+    [id_producto] => 1
+    [nombre_producto] => Jarra
+    [descripcion] => Jarra de Vidrio
+    [tamano] => Mediano
+    [categoria] => cristal
+    [cantidad] => 1
+    [codigo_barras] => 12345678
+    [precio_bs] => 2400.00
+    [precio_usd] => 20.00
+    [imagen] => 
+)
+
+[2025-10-17 04:00:39] === INICIO DE GUARDAR PRODUCTO ===
+[2025-10-17 04:00:39] POST: Array
+(
+    [id_producto] => 1
+    [imagen_actual] => 68eb218e3f25e.png
+    [nombre_producto] => Jarra
+    [codigo_barras] => 12345678
+    [descripcion] => Jarra de Vidrio
+    [tamano] => Mediano
+    [categoria] => Cristal
+    [cantidad] => 1
+    [precio_bs] => 2400.00
+    [precio_usd] => 20.00
+)
+
+[2025-10-17 04:00:39] FILES: Array
+(
+)
+
+[2025-10-17 04:00:39] ⚠️ No se subió imagen ni se mantuvo la actual.
+[2025-10-17 04:00:39] Datos a guardar: Array
+(
+    [id_producto] => 1
+    [nombre_producto] => Jarra
+    [descripcion] => Jarra de Vidrio
+    [tamano] => Mediano
+    [categoria] => Cristal
+    [cantidad] => 1
+    [codigo_barras] => 12345678
+    [precio_bs] => 2400.00
+    [precio_usd] => 20.00
+    [imagen] => 
+)
+
+[2025-10-21 01:14:23] === INICIO DE GUARDAR PRODUCTO ===
+[2025-10-21 01:14:23] POST: Array
+(
+    [id_producto] => 1
+    [imagen_actual] => 68eb218e3f25e.png
+    [nombre_producto] => Jarra
+    [codigo_barras] => 12345678
+    [cantidad] => 1
+    [descripcion] => Jarra de Vidrio
+    [tamano] => Mediano
+    [categoria] => Cristal
+    [precio_bs] => 2400.00
+    [precio_usd] => 20.00
+)
+
+[2025-10-21 01:14:23] FILES: Array
+(
+    [imagen] => Array
+        (
+            [name] => jarra.png
+            [full_path] => jarra.png
+            [type] => image/png
+            [tmp_name] => C:\xampp\tmp\phpB2B.tmp
+            [error] => 0
+            [size] => 1020736
+        )
+
+)
+
+[2025-10-21 01:14:23] ✅ Imagen recibida: jarra.png
+[2025-10-21 01:14:23] ✅ Imagen guardada como: 68f6c24f79627.png
+[2025-10-21 01:14:23] Datos a guardar: Array
+(
+    [id_producto] => 1
+    [nombre_producto] => Jarra
+    [descripcion] => Jarra de Vidrio
+    [tamano] => Mediano
+    [categoria] => Cristal
+    [cantidad] => 1
+    [codigo_barras] => 12345678
+    [precio_bs] => 2400.00
+    [precio_usd] => 20.00
+    [imagen] => 68f6c24f79627.png
+)
+
+[2025-10-21 01:20:48] === INICIO DE GUARDAR PRODUCTO ===
+[2025-10-21 01:20:48] POST: Array
+(
+    [id_producto] => 1
+    [imagen_actual] => 68f6c24f79627.png
+    [nombre_producto] => Jarra
+    [codigo_barras] => 12345678
+    [cantidad] => 1
+    [descripcion] => Jarra de Vidrio
+    [tamano] => Mediano
+    [categoria] => Cristal
+    [precio_bs] => 2400.00
+    [precio_usd] => 20.00
+)
+
+[2025-10-21 01:20:48] FILES: Array
+(
+    [imagen] => Array
+        (
+            [name] => jarra.png
+            [full_path] => jarra.png
+            [type] => image/png
+            [tmp_name] => C:\xampp\tmp\phpEB62.tmp
+            [error] => 0
+            [size] => 1020736
+        )
+
+)
+
+[2025-10-21 01:20:48] ✅ Imagen recibida: jarra.png
+[2025-10-21 01:20:48] ✅ Imagen guardada como: 68f6c3d08c1e1.png
+[2025-10-21 01:20:48] Datos a guardar: Array
+(
+    [id_producto] => 1
+    [nombre_producto] => Jarra
+    [descripcion] => Jarra de Vidrio
+    [tamano] => Mediano
+    [categoria] => Cristal
+    [cantidad] => 1
+    [codigo_barras] => 12345678
+    [precio_bs] => 2400.00
+    [precio_usd] => 20.00
+    [imagen] => 68f6c3d08c1e1.png
+)
+
+[2025-10-21 01:38:09] === INICIO DE GUARDAR PRODUCTO ===
+[2025-10-21 01:38:09] POST: Array
+(
+    [id_producto] => 1
+    [imagen_actual] => 68f6c3d08c1e1.png
+    [nombre_producto] => Jarra
+    [codigo_barras] => 12345678
+    [cantidad] => 1
+    [descripcion] => Jarra de Vidrio
+    [tamano] => Mediano
+    [categoria] => Cristal
+    [precio_bs] => 2400.00
+    [precio_usd] => 20.00
+)
+
+[2025-10-21 01:38:09] FILES: Array
+(
+    [imagen] => Array
+        (
+            [name] => jarra.png
+            [full_path] => jarra.png
+            [type] => image/png
+            [tmp_name] => C:\xampp\tmp\phpCEC5.tmp
+            [error] => 0
+            [size] => 1020736
+        )
+
+)
+
+[2025-10-21 01:38:09] ✅ Imagen recibida: jarra.png
+[2025-10-21 01:38:09] ✅ Imagen guardada como: 68f6c7e1c77d2.png
+[2025-10-21 01:38:09] Datos a guardar: Array
+(
+    [id_producto] => 1
+    [nombre_producto] => Jarra
+    [descripcion] => Jarra de Vidrio
+    [tamano] => Mediano
+    [categoria] => Cristal
+    [cantidad] => 1
+    [codigo_barras] => 12345678
+    [precio_bs] => 2400.00
+    [precio_usd] => 20.00
+    [imagen] => 68f6c7e1c77d2.png
+)
+
