@@ -513,6 +513,140 @@ body {
 }
 
 /* ==================== */
+/* Historiales */
+/* ==================== */
+
+.tabla-gestion-container {
+    background-color: #ffffff;
+    border-radius: 12px; 
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    padding: 20px 10px; 
+    overflow-x: auto; 
+}
+
+/* La tabla en sí, ahora sin fondo */
+.tabla-gestion {
+    width: 100%;
+    border-collapse: collapse;
+    border-spacing: 0;
+}
+
+/* --- Cabecera de la tabla --- */
+.tabla-gestion thead th {
+    text-align: left;
+    padding: 12px 15px;
+    color: #9a9a9a; 
+    font-size: 0.8em;
+    text-transform: uppercase;
+    font-weight: 600;
+    border-bottom: 2px solid #f0f0f0;
+    background: #fff; 
+}
+
+/* --- Filas de la tabla --- */
+.tabla-gestion tbody tr {
+    background: transparent;
+    box-shadow: none;
+    border-bottom: 1px solid #f4f4f4; 
+    transition: background-color 0.2s ease;
+}
+
+/* Quitar la última línea de borde */
+.tabla-gestion tbody tr:last-child {
+    border-bottom: none;
+}
+
+/* Efecto hover sutil */
+.tabla-gestion tbody tr:hover {
+    background-color: #fcfcfc; 
+    transform: none; 
+}
+
+/* --- Celdas de la tabla --- */
+.tabla-gestion tbody td {
+    padding: 16px 15px; 
+    vertical-align: middle;
+    font-weight: 500;
+    color: #333;
+    
+    /* Quitar todos los bordes de tarjeta */
+    border: none;
+}
+
+/* Quitar el redondeo de las celdas */
+.tabla-gestion tbody td:first-child,
+.tabla-gestion tbody td:last-child {
+    border-radius: 0;
+}
+
+/* --- PAGINADOR --- */
+.paginador-container {
+    display: flex;
+    justify-content: flex-end; 
+    align-items: center;
+    padding: 10px 20px; 
+    border-top: 1px solid #f0f0f0; 
+    margin-top: 0px; 
+}
+
+.paginador-container button {
+    background-color: #f0f0f0; 
+    color: #555;
+    border: none;
+    padding: 8px 10px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.85em;
+    transition: background-color 0.2s ease, color 0.2s ease;
+    display: flex; 
+    align-items: center;
+    justify-content: center;
+    min-width: 25px; 
+    height: 25px; 
+}
+
+.paginador-container button:hover:not(:disabled) {
+    background-color: #e0e0e0;
+    color: #333;
+}
+
+.paginador-container button:disabled {
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+
+.paginador-container .btn-siguiente {
+    background-color: #5d53c3;
+    color: #ffffff;
+}
+
+.paginador-container .btn-siguiente:hover:not(:disabled) {
+    background-color: #7a1be1; 
+}
+
+.paginador-container .page-indicator {
+    margin: 0 15px;
+    font-weight: 500;
+    color: #666;
+    font-size: 0.9em;
+}
+
+/* Estilos para los iconos del paginador */
+.paginador-container button i {
+    font-size: 0.9em; 
+}
+
+/* Estilo para el botón "Anterior" con icono */
+.paginador-container .btn-anterior {
+    background-color: #5d53c3; 
+    color:#ffffff;
+}
+
+.paginador-container .btn-anterior:hover:not(:disabled) {
+    background-color: #e0e0e0;
+}
+
+/* ==================== */
 /*   TASAS FORMULARIO  */
 /* ==================== */
 .form-simplified {
@@ -997,6 +1131,53 @@ body {
     padding: 12px;
 }
 
+/* Modal de Vista Previa de PDF */
+#pdf-preview-modal {
+    z-index: 1000;
+}
+
+/* El contenedor blanco del modal */
+.modal-contenido-pdf {
+    background-color: #ffffff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    width: 90%; 
+    max-width: 1000px; 
+    height: 90vh; 
+    display: flex;
+    flex-direction: column; 
+}
+
+.pdf-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid #ddd;
+    flex-shrink: 0; 
+}
+
+.pdf-header h3 {
+    margin: 0;
+    color: #333;
+}
+
+.pdf-header div {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+/* El iframe que contendrá el PDF */
+#pdf-iframe {
+    flex-grow: 1; 
+    width: 100%;
+    height: 100%; 
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
 
 
 /* ==================== */

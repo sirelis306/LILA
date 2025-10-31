@@ -65,7 +65,7 @@ include __DIR__ . '/../shared/dashboard_layout.php';
                         <a href="<?= BASE_URL ?>?r=admin" class="btn btn-secondary">
                             <i class="fas fa-arrow-left"></i> Volver al Panel
                         </a>
-                        <a href="#" class="btn btn-secondary">
+                        <a href="<?= BASE_URL ?>?r=historial-tasas" class="btn btn-secondary">
                             <i class="fas fa-history"></i> Ver Historial
                         </a>
                     <?php else: ?>

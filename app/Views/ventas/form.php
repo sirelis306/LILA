@@ -1,6 +1,12 @@
 <?php
+require_once __DIR__ . "/../../Helpers/auth.php";
 $esAdmin = (currentUser()['rol'] ?? '') === 'administrador';
-$titulo = $esAdmin ? 'Historial de Ventas' : 'Nueva Venta';
+
+if ($esAdmin) {
+    header('Location: ' . BASE_URL . '?r=historial-ventas');
+    exit;
+}
+$titulo = 'Nueva Venta';
 
 // Obtener tasa del día
 $model = new VentasModel();
@@ -10,6 +16,14 @@ include __DIR__ . '/../shared/dashboard_layout.php';
 ?>
 
 <?php include __DIR__ . '/../shared/flash.php'; ?>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
+<script>
+    const BASE_URL = "<?= BASE_URL ?>";
+</script>
+<script src="<?= BASE_URL ?>js/facturaPDF.js?v=1.5"></script>
+<script src="<?= BASE_URL ?>js/ventas.js?v=1.4"></script>
 
 <div class="content-body">
     <div class="container">
@@ -33,10 +47,6 @@ include __DIR__ . '/../shared/dashboard_layout.php';
             </div>    
              
             <!-- Resultados de búsqueda (existente) -->
-            <div id="resultados-busqueda" class="lista-productos">
-                <!-- Los resultados aparecerán aquí -->
-            </div>
-            
             <div id="resultados-busqueda" class="lista-productos">
                 <!-- Los resultados aparecerán aquí -->
             </div>
@@ -95,12 +105,15 @@ include __DIR__ . '/../shared/dashboard_layout.php';
                     </div>
                 </div>
                 
-                <button onclick="mostrarPasoPago()" 
-                        class="btn-procesar-venta" 
-                        id="btn-procesar" 
-                        disabled>
-                    PROCESAR VENTA
-                </button>
+                <div style="display: flex; gap: 10px; margin-top: 10px;">
+                    <button onclick="mostrarPasoPago()" 
+                            class="btn-procesar-venta" 
+                            id="btn-procesar" 
+                            disabled
+                            style="flex: 2;">
+                        PROCESAR VENTA
+                    </button>
+                </div>
             </div>
         </div>
     </div>
@@ -115,14 +128,19 @@ include __DIR__ . '/../shared/dashboard_layout.php';
                 <!-- Los productos del carrito aparecerán aquí -->
             </div>
             
-            <div class="totales-venta">
+
+           <div class="totales-venta">
                 <div class="total-fila">
-                    <span>Subtotal:</span>
-                    <span id="resumen-subtotal">$0.00</span>
+                    <span>Subtotal USD:</span>
+                    <span id="resumen-subtotal-usd">$0.00</span>
+                </div>
+                <div class="total-fila">
+                    <span>Subtotal BS:</span>
+                    <span id="resumen-subtotal-bs">0.00 Bs</span>
                 </div>
                 <div class="total-fila">
                     <span>IVA (16%):</span>
-                    <span id="resumen-iva">$0.00</span>
+                    <span id="resumen-iva-usd">$0.00</span>
                 </div>
                 <div class="total-fila total-final">
                     <span>Total USD:</span>
@@ -160,8 +178,13 @@ include __DIR__ . '/../shared/dashboard_layout.php';
                     </label>
 
                     <label class="metodo-opcion">
-                        <input type="radio" name="metodo_pago" value="tarjeta"> 
-                        Tarjeta
+                        <input type="radio" name="metodo_pago" value="tarjeta_debito"> 
+                        Tarjeta Débito
+                    </label>
+
+                    <label class="metodo-opcion">
+                        <input type="radio" name="metodo_pago" value="tarjeta_credito"> 
+                        Tarjeta Crédito
                     </label>
                 </div>
 
@@ -188,9 +211,9 @@ include __DIR__ . '/../shared/dashboard_layout.php';
                             style="flex: 1;">
                         Volver
                     </button>
-                    <button type="submit" 
+                    <button type="button" 
                             class="btn-procesar-venta" 
-                            style="flex: 2;">
+                            onclick="procesarVentaCompleta()">
                         PROCESAR VENTA
                     </button>
                 </div>
@@ -198,14 +221,7 @@ include __DIR__ . '/../shared/dashboard_layout.php';
         </div>
     </div>
 
-<?php else: ?>
-    <!-- VISTA ADMIN - HISTORIAL -->
-    <div class="alert alert-info">
-        <p>Funcionalidad de historial de ventas en desarrollo...</p>
-        <a href="<?= BASE_URL ?>?r=form-tasa" class="btn btn-primary">Gestionar Tasas</a>
-    </div>
 <?php endif; ?>
-
 <!-- Modal de Notificación Personalizada -->
 <div id="stock-alert-modal" class="modal-personalizado" style="display: none;">
     <div class="modal-contenido">
@@ -218,8 +234,4 @@ include __DIR__ . '/../shared/dashboard_layout.php';
 
 <?php include __DIR__ . '/../shared/dashboard_end.php'; ?>
 
-<!-- Incluir el archivo JavaScript externo -->
-<script>
-    const BASE_URL = "<?= BASE_URL ?>";
-</script>
-<script src="<?= BASE_URL ?>js/ventas.js?v=1.0"></script>
+

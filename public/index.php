@@ -22,6 +22,7 @@ switch ($r) {
 
   case 'form-tasa':      (new TasaController)->formTasa(); break;  
   case 'guardar-tasa':   (new TasaController)->guardarTasa(); break;  
+  case 'historial-tasas': (new TasaController)->historialTasas(); break;
 
   case 'admin':          requireRole(['administrador']);  (new DashboardController)->admin(); break;
   case 'empleado':       requireRole(['empleado','administrador']); (new DashboardController)->empleado(); break;
@@ -30,6 +31,7 @@ switch ($r) {
   case 'buscar-producto': (new VentasController)->buscarProducto(); break;
   case 'procesar-venta': (new VentasController)->procesarVenta(); break;
   case 'historial-ventas': (new VentasController)->historialVentas(); break;
+  case 'get-datos-factura-json': (new VentasController())->getDatosFacturaJson(); break;
 
   case 'inventario':     requireRole(['administrador']); (new InventarioController)->index(); break;
   case 'form-producto':  requireRole(['administrador']); (new InventarioController)->formProducto(); break;

@@ -44,5 +44,19 @@ class TasaModel {
         $stmt->execute();
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
+    
+    public function getHistorialTasas() {
+        try {
+            // Usamos el nombre de tu tabla: tasa_cambio
+            $stmt = $this->pdo->query("SELECT id_tasa, tasa, fecha 
+                                      FROM tasa_cambio 
+                                      ORDER BY fecha DESC
+                                      LIMIT 20");
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            error_log("Error en getHistorialTasas: " . $e->getMessage());
+            return [];
+        }
+    }
 } 
 ?>

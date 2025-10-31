@@ -102,7 +102,7 @@ class VentasController {
         // Calcular IVA y total final en USD y BS
         $ivaUsd = $subtotalUsd * 0.16;
         $totalVentaUsd = $subtotalUsd + $ivaUsd;
-        $totalVentaBs = $totalVentaUsd * $tasaRealParaVenta; // Usamos la tasa real de la DB
+        $totalVentaBs = $totalVentaUsd * $tasaRealParaVenta; 
 
         // Llamar al nuevo método transaccional del modelo
         try {
@@ -120,11 +120,10 @@ class VentasController {
             if ($idVenta) {
                 echo json_encode(['success' => true, 'message' => 'Venta procesada exitosamente', 'id_venta' => $idVenta]);
             } else {
-                // Esto solo se ejecutaría si completarProcesoVenta retorna false y no lanza excepción
                 echo json_encode(['success' => false, 'error' => 'Error desconocido al completar la venta.']);
             }
         } catch (Exception $e) {
-            // Captura cualquier excepción lanzada desde el modelo (ej. stock insuficiente, error DB)
+            // Captura cualquier excepción lanzada desde el modelo 
             echo json_encode(['success' => false, 'error' => 'Error al procesar la venta: ' . $e->getMessage()]);
         }
         exit;
@@ -140,6 +139,72 @@ class VentasController {
         $ventas = $model->getHistorialVentas();
         
         include __DIR__ . '/../Views/ventas/historial.php';
+    }
+
+    public function getDatosFacturaJson() {
+        if (!isLoggedIn() || ($_SESSION['user']['rol'] ?? '') != 'administrador') {
+            header('Content-Type: application/json');
+            echo json_encode(['error' => 'No autorizado']);
+            exit;
+        }
+
+        $idVenta = $_GET['id'] ?? 0;
+        if ($idVenta == 0) {
+            header('Content-Type: application/json');
+            echo json_encode(['error' => 'ID de venta inválido']);
+            exit;
+        }
+
+        $model = new VentasModel();
+        $venta = $model->getVentaCompletaPorId($idVenta);
+        $items = $model->getDetalleVenta($idVenta);
+
+        if (!$venta || empty($items)) {
+            header('Content-Type: application/json');
+            echo json_encode(['error' => 'Venta no encontrada o sin productos']);
+            exit;
+        }
+        
+        // Asumimos IVA 16% para recalcular el subtotal
+        $subtotalUSD = $venta['total_usd'] / 1.16;
+        $ivaUSD = $venta['total_usd'] - $subtotalUSD;
+        $subtotalBS = $venta['total_bs'] / 1.16;
+
+        // Formatear los items
+        $itemsFormateados = [];
+        foreach ($items as $item) {
+            $itemsFormateados[] = [
+                'nombre' => $item['nombre_producto'],
+                'cantidad' => $item['cantidad'],         
+                'precio' => $item['precio_unitario_usd']
+            ];
+        }
+
+        // Objeto final que espera facturaPDF.js
+        $datosFactura = [
+            'numeroFactura' => $venta['id_venta'],
+            'fecha' => date("d/m/Y", strtotime($venta['fecha'])),
+            'cliente' => [
+                'nombre' => $venta['cliente_nombre'] ?? 'Cliente Ocasional',
+                'idCliente' => $venta['id_cliente'] ?? 'N/A'
+            ],
+            'items' => $itemsFormateados,
+            
+            'subtotalUSD' => $subtotalUSD,
+            'ivaUSD' => $ivaUSD,
+            'totalUSD' => $venta['total_usd'],
+            
+            'subtotalBS' => $subtotalBS,
+            'totalBS' => $venta['total_bs'],
+            'tasa' => $venta['tasa_aplicada'],
+
+            'metodoPago' => $venta['metodo_pago'],
+            'referencia' => $venta['referencia_pago'] ?? 'N/A'
+        ];
+
+        header('Content-Type: application/json');
+        echo json_encode($datosFactura);
+        exit;
     }
 }
 ?>

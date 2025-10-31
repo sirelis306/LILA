@@ -529,3 +529,48 @@
     [imagen] => 68f6c7e1c77d2.png
 )
 
+[2025-10-24 03:31:46] === INICIO DE GUARDAR PRODUCTO ===
+[2025-10-24 03:31:46] POST: Array
+(
+    [id_producto] => 1
+    [imagen_actual] => 68f6c7e1c77d2.png
+    [nombre_producto] => Jarra
+    [codigo_barras] => 12345678
+    [cantidad] => 1
+    [descripcion] => Jarra de Vidrio
+    [tamano] => Mediano
+    [categoria] => Cristal
+    [precio_bs] => 2400.00
+    [precio_usd] => 20.00
+)
+
+[2025-10-24 03:31:46] FILES: Array
+(
+    [imagen] => Array
+        (
+            [name] => jarra.png
+            [full_path] => jarra.png
+            [type] => image/png
+            [tmp_name] => C:\xampp\tmp\phpFE3E.tmp
+            [error] => 0
+            [size] => 1020736
+        )
+
+)
+
+[2025-10-24 03:31:46] ✅ Imagen recibida: jarra.png
+[2025-10-24 03:31:46] ✅ Imagen guardada como: 68fad702635f6.png
+[2025-10-24 03:31:46] Datos a guardar: Array
+(
+    [id_producto] => 1
+    [nombre_producto] => Jarra
+    [descripcion] => Jarra de Vidrio
+    [tamano] => Mediano
+    [categoria] => Cristal
+    [cantidad] => 1
+    [codigo_barras] => 12345678
+    [precio_bs] => 2400.00
+    [precio_usd] => 20.00
+    [imagen] => 68fad702635f6.png
+)
+

@@ -6,7 +6,6 @@ function mostrarStockAlertModal(mensaje, titulo = null) {
     const tituloElement = document.getElementById('modal-titulo-stock');
     const mensajeElement = document.getElementById('modal-mensaje-stock');
     
-    // Si se proporciona un título, lo usamos; si no, dejamos el actual
     if (titulo !== null) {
         tituloElement.textContent = titulo;
     }
@@ -19,7 +18,6 @@ function ocultarStockAlertModal() {
     document.getElementById('stock-alert-modal').style.display = 'none';
 }
 
-// Hacer la función de ocultar disponible globalmente para el HTML
 window.ocultarStockAlertModal = ocultarStockAlertModal;
 
 function obtenerCarrito() {
@@ -41,7 +39,6 @@ function formatearMoneda(valor, moneda = "USD") {
     }
 }
 
-// Inicialización cuando el DOM esté listo
 document.addEventListener('DOMContentLoaded', function() {
     const tasaInput = document.getElementById('tasa-actual');
     if (tasaInput) {
@@ -50,23 +47,18 @@ document.addEventListener('DOMContentLoaded', function() {
         tasaDelDia = 36.50;
     }
     
-    // Configurar método de pago
     const metodosPago = document.querySelectorAll('input[name="metodo_pago"]');
     const grupoReferencia = document.getElementById('grupo-referencia');
     
     if (metodosPago && grupoReferencia) {
         metodosPago.forEach(metodo => {
             metodo.addEventListener('change', function() {
-                const necesitaReferencia = ['transferencia', 'pago_movil', 'tarjeta'].includes(this.value);
+                const necesitaReferencia = ['transferencia', 'pago_movil'].includes(this.value);
                 grupoReferencia.style.display = necesitaReferencia ? 'block' : 'none';
             });
         });
     }
     
-    // Cargar clientes si existe el select - COMENTADO TEMPORALMENTE
-    // cargarClientes();
-    
-    // Configurar búsqueda con Enter
     const buscarInput = document.getElementById('buscar-producto');
     if (buscarInput) {
         buscarInput.addEventListener('keypress', function(e) {
@@ -75,9 +67,17 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     }
+    const btnDescargaModal = document.getElementById('btn-descargar-pdf-modal');
+    if (btnDescargaModal) {
+        btnDescargaModal.addEventListener('click', () => {
+            if (docGlobalParaDescarga) {
+                docGlobalParaDescarga.save(nombreArchivoGlobal);
+                ocultarPdfModal(); 
+            }
+        });
+    }
 });
 
-// Función de búsqueda de productos
 async function buscarProducto() {
     const busqueda = document.getElementById('buscar-producto').value.trim();
     if (!busqueda) {
@@ -87,8 +87,6 @@ async function buscarProducto() {
 
     try {
         const response = await fetch(`${BASE_URL}?r=buscar-producto&q=${encodeURIComponent(busqueda)}`);
-        
-        // Verificar si la respuesta es HTML de error
         const contentType = response.headers.get('content-type');
         if (!contentType || !contentType.includes('application/json')) {
             const text = await response.text();
@@ -105,10 +103,8 @@ async function buscarProducto() {
     }
 }
 
-// Mostrar resultados de búsqueda
 function mostrarResultados(productos) {
     const resultadosDiv = document.getElementById('resultados-busqueda');
-    
     if (!resultadosDiv) {
         console.error('Elemento resultados-busqueda no encontrado');
         return;
@@ -123,22 +119,16 @@ function mostrarResultados(productos) {
     productos.forEach(producto => {
         const estaAgotado = producto.cantidad <= 0;
         const nombreSeguro = producto.nombre_producto.replace(/'/g, "\\'").replace(/"/g, '&quot;');
-        
-        // Construir URL de la imagen
         const imagenUrl = producto.imagen 
             ? `${BASE_URL}img/productos/${encodeURIComponent(producto.imagen)}`
-            : `${BASE_URL}img/productos/default.png`; // Imagen por defecto si no hay imagen
+            : `${BASE_URL}img/productos/default.png`;
 
         html += `
             <div class="producto-item ${estaAgotado ? 'producto-agotado' : ''}" 
                 onclick="${estaAgotado ? '' : `agregarAlCarrito(${producto.id_producto}, '${nombreSeguro}', ${producto.precio_usd}, ${producto.cantidad})`}">
-                
-                <!-- Imagen del producto -->
                 <div class="producto-imagen">
                     <img src="${imagenUrl}" alt="${producto.nombre_producto}" onerror="this.src='${BASE_URL}img/default-product.png'">
                 </div>
-                
-                <!-- Datos del producto -->
                 <div class="producto-info">
                     <div class="producto-nombre">${producto.nombre_producto}</div>
                     <div class="producto-precio">${formatearMoneda(producto.precio_usd)}</div>
@@ -151,7 +141,6 @@ function mostrarResultados(productos) {
     resultadosDiv.innerHTML = html;
 }
 
-// Funciones del carrito
 function agregarAlCarrito(id, nombre, precio, stock) {
     if (stock <= 0) {
         mostrarStockAlertModal('Producto agotado. No se puede agregar al carrito.');
@@ -159,9 +148,7 @@ function agregarAlCarrito(id, nombre, precio, stock) {
     }
 
     const productoExistente = carrito.find(p => p.id === id);
-    
     if (productoExistente) {
-        // Incrementa la cantidad solo si no supera el stock disponible
         if (productoExistente.cantidad + 1 > stock) {
             mostrarStockAlertModal(`No se puede agregar más. Solo quedan ${stock} unidades de "${nombre}".`);
             return;
@@ -173,32 +160,28 @@ function agregarAlCarrito(id, nombre, precio, stock) {
             nombre: nombre,
             precio: parseFloat(precio),
             cantidad: 1,
-            stock: parseInt(stock) // Guardamos el stock original disponible
+            stock: parseInt(stock)
         });
     }
     
     actualizarCarrito();
     
-    // Limpiar búsqueda
     const buscarInput = document.getElementById('buscar-producto');
     const resultadosDiv = document.getElementById('resultados-busqueda');
     if (buscarInput) buscarInput.value = '';
     if (resultadosDiv) resultadosDiv.innerHTML = '';
 }
 
-// Modificación también en actualizarCantidad para el mismo chequeo
 function actualizarCantidad(id, nuevaCantidad) {
     const producto = carrito.find(p => p.id === id);
     if (producto) {
         nuevaCantidad = parseInt(nuevaCantidad);
         if (isNaN(nuevaCantidad) || nuevaCantidad <= 0) {
-            eliminarDelCarrito(id); // Si la cantidad es 0 o inválida, se elimina del carrito
+            eliminarDelCarrito(id);
             return;
         }
-        
         if (nuevaCantidad > producto.stock) {
             mostrarStockAlertModal(`No hay suficiente stock disponible para "${producto.nombre}". Solo quedan ${producto.stock} unidades.`);
-            // Si la cantidad es mayor que el stock, se ajusta al máximo disponible
             producto.cantidad = producto.stock; 
         } else {
             producto.cantidad = nuevaCantidad;
@@ -210,56 +193,104 @@ function actualizarCantidad(id, nuevaCantidad) {
 function vaciarCarrito() {
     if (confirm('¿Estás seguro de vaciar el carrito?')) {
         carrito = [];
-        // descuentoAplicado se ha eliminado
         actualizarCarrito();
     }
+}
+
+function validarDatosParaPDF() {
+    const carrito = obtenerCarrito();
+    if (carrito.length === 0) {
+        return { valido: false, mensaje: 'El carrito está vacío' };
+    }
+    
+    if (document.getElementById('paso-pago').style.display !== 'none') {
+        const metodoPagoSeleccionado = document.querySelector('input[name="metodo_pago"]:checked');
+        if (!metodoPagoSeleccionado) {
+            return { valido: false, mensaje: 'Seleccione un método de pago' };
+        }
+        
+        const metodo = metodoPagoSeleccionado.value;
+        const referenciaInput = document.querySelector('input[name="referencia_pago"]');
+        if (['transferencia', 'pago_movil'].includes(metodo)) {
+            if (!referenciaInput || !referenciaInput.value.trim()) {
+                return { valido: false, mensaje: 'Ingrese la referencia de pago' };
+            }
+        }
+    }
+    
+    return { valido: true };
 }
 
 function actualizarResumenPedido() {
     const carritoData = obtenerCarrito(); 
     const resumenContainer = document.getElementById('resumen-pedido');
-    const tasa = parseFloat(document.getElementById('tasa-actual').value);
+    if (!resumenContainer) {
+        console.error('No se encontró el contenedor del resumen');
+        return;
+    }
     
+    const tasa = parseFloat(document.getElementById('tasa-actual').value) || tasaDelDia;
     let html = '';
-    let subtotal = 0;
+    let subtotalUSD = 0;
     
-    carritoData.forEach(item => {
-        subtotal += item.precio * item.cantidad;
-        html += `
-            <div class="producto-item">
-                <div class="producto-nombre">${item.nombre}</div>
-                <div class="producto-stock">Cantidad: ${item.cantidad} (Stock: ${item.stock})</div>
-            </div>
-        `;
-    });
+    if (carritoData.length === 0) {
+        html = '<div class="alert alert-warning">No hay productos en el carrito</div>';
+    } else {
+        carritoData.forEach(item => {
+            const subtotalItemUSD = item.precio * item.cantidad;
+            const subtotalItemBS = subtotalItemUSD * tasa;
+            subtotalUSD += subtotalItemUSD;
+            
+            html += `
+                <div class="producto-resumen" style="border-bottom: 1px solid #eee; padding: 8px 0;">
+                    <div style="font-weight: bold;">${item.nombre}</div>
+                    <div style="font-size: 0.9em; color: #666;">
+                        ${item.cantidad} x $${item.precio.toFixed(2)} = 
+                        $${subtotalItemUSD.toFixed(2)} (${subtotalItemBS.toFixed(2)} Bs)
+                    </div>
+                </div>
+            `;
+        });
+    }
     
-    const iva = subtotal * 0.16;
-    const totalUSD = subtotal + iva;
-    const totalBS = totalUSD * tasaDelDia;
+    const ivaUSD = subtotalUSD * 0.16;
+    const totalUSD = subtotalUSD + ivaUSD;
+    const totalBS = totalUSD * tasa;
+    const subtotalBS = subtotalUSD * tasa;
     
     resumenContainer.innerHTML = html;
-    document.getElementById('resumen-subtotal').textContent = formatearMoneda(subtotal);
-    document.getElementById('resumen-iva').textContent = formatearMoneda(iva);
-    document.getElementById('resumen-total-usd').textContent = formatearMoneda(totalUSD);
-    document.getElementById('resumen-total-bs').textContent = formatearMoneda(totalBS, "VES");
+    
+    const elementos = {
+        'resumen-subtotal-usd': formatearMoneda(subtotalUSD),
+        'resumen-subtotal-bs': formatearMoneda(subtotalBS, "VES"),
+        'resumen-iva-usd': formatearMoneda(ivaUSD),
+        'resumen-total-usd': formatearMoneda(totalUSD),
+        'resumen-total-bs': formatearMoneda(totalBS, "VES")
+    };
+    
+    Object.keys(elementos).forEach(id => {
+        const elemento = document.getElementById(id);
+        if (elemento) {
+            elemento.textContent = elementos[id];
+        } else {
+            console.error(`Elemento no encontrado: ${id}`);
+        }
+    });
 }
 
-// Mostrar pantalla de pago
 function mostrarPasoPago() {
-    document.getElementById('paso-carrito').style.display = 'none';
-    document.getElementById('paso-pago').style.display = 'grid';
-    
-    // Actualizar resumen del pedido
+    const pasoCarrito = document.getElementById('paso-carrito');
+    const pasoPago = document.getElementById('paso-pago');
+    if (pasoCarrito) pasoCarrito.style.display = 'none';
+    if (pasoPago) pasoPago.style.display = 'grid';
     actualizarResumenPedido();
 }
 
-// Volver al carrito
 function volverAlCarrito() {
     document.getElementById('paso-pago').style.display = 'none';
     document.getElementById('paso-carrito').style.display = 'grid';
 }
 
-// Actualizar carrito
 function actualizarCarrito() {
     const carritoVacio = document.getElementById('carrito-vacio');
     const contenidoCarrito = document.getElementById('contenido-carrito');
@@ -314,7 +345,6 @@ function actualizarCarrito() {
 
     itemsCarrito.innerHTML = html;
 
-    // Calcular totales
     carrito.forEach(producto => {
         subtotalUsd += producto.precio * producto.cantidad;
     });
@@ -323,7 +353,6 @@ function actualizarCarrito() {
     const totalUsd = subtotalUsd + ivaUsd;
     const totalBs = totalUsd * tasaDelDia;
 
-    // Actualizar interfaz
     document.getElementById('subtotal-usd').textContent = formatearMoneda(subtotalUsd);
     document.getElementById('subtotal-bs').textContent = formatearMoneda(subtotalBs, "VES");
     document.getElementById('iva-usd').textContent = formatearMoneda(ivaUsd);
@@ -336,77 +365,194 @@ function eliminarDelCarrito(id) {
     actualizarCarrito();
 }
 
-// Cargar clientes desde la base de datos - COMENTADO TEMPORALMENTE
-async function cargarClientes() {
+function obtenerDatosParaFactura() {
+    const carritoData = obtenerCarrito();
+    const tasa = parseFloat(document.getElementById('tasa-actual').value);
+    
+    let subtotalUSD = 0;
+    carritoData.forEach(item => {
+        subtotalUSD += item.precio * item.cantidad;
+    });
+    
+    const ivaUSD = subtotalUSD * 0.16;
+    const totalUSD = subtotalUSD + ivaUSD;
+    const totalBS = totalUSD * tasa;
+    
+    return {
+        carrito: carritoData,
+        subtotalUSD: subtotalUSD,
+        ivaUSD: ivaUSD,
+        totalUSD: totalUSD,
+        totalBS: totalBS,
+        tasa: tasa
+    };
+}
+
+async function procesarVentaCompleta() {
+    // VALIDACIONES
+    if (carrito.length === 0) {
+        mostrarStockAlertModal('El carrito está vacío.');
+        return;
+    }
+
+    const metodoPago = document.querySelector('input[name="metodo_pago"]:checked');
+    if (!metodoPago) {
+        mostrarStockAlertModal('Seleccione un método de pago.');
+        return;
+    }
+
+    const metodo = metodoPago.value;
+    const referenciaInput = document.querySelector('input[name="referencia_pago"]');
+    if (['transferencia', 'pago_movil'].includes(metodo) && (!referenciaInput || !referenciaInput.value.trim())) {
+        mostrarStockAlertModal('Ingrese la referencia de pago.');
+        return;
+    }
+
+    const clienteSelect = document.querySelector('select[name="id_cliente"]');
+    const clienteNombre = clienteSelect?.options[clienteSelect.selectedIndex]?.text?.trim() || 'Cliente ocasional';
+    const datosCalculo = obtenerDatosParaFactura();
+
+    const datosFacturaParaPDF = {
+        numeroFactura: 'ERROR_NO_ASIGNADO', 
+        fecha: new Date().toLocaleDateString('es-ES'),
+        cliente: {
+            nombre: clienteNombre,
+            idCliente: clienteSelect?.value || 'N/A'
+        },
+        items: carrito.map(item => ({
+            nombre: item.nombre,
+            cantidad: item.cantidad,
+            precio: item.precio
+        })),
+        subtotalUSD: datosCalculo.subtotalUSD || 0,
+        ivaUSD: datosCalculo.ivaUSD || 0,
+        totalUSD: datosCalculo.totalUSD || 0,
+        subtotalBS: (datosCalculo.subtotalUSD || 0) * (datosCalculo.tasa || 0),
+        totalBS: datosCalculo.totalBS || 0,
+        tasa: datosCalculo.tasa || 0,
+        metodoPago: metodo,
+        referencia: referenciaInput?.value || 'N/A'
+    };
+
+    const formData = new FormData();
+    formData.append('csrf', document.querySelector('input[name="csrf"]').value);
+    formData.append('tasa', tasaDelDia);
+    formData.append('metodo_pago', metodo);
+    formData.append('referencia_pago', referenciaInput?.value || '');
+    formData.append('id_cliente', clienteSelect?.value || '');
+    formData.append('carrito', JSON.stringify(carrito));
+
     try {
-        const selectClientes = document.querySelector('select[name="id_cliente"]');
-        if (!selectClientes) return;
+        mostrarStockAlertModal('Procesando venta...', '⏳ Enviando');
         
-        const response = await fetch(`${BASE_URL}?r=obtener-clientes`);
-        const clientes = await response.json();
-        
-        if (clientes && clientes.length > 0) {
-            clientes.forEach(cliente => {
-                const option = document.createElement('option');
-                option.value = cliente.id_cliente;
-                option.textContent = `${cliente.nombre} ${cliente.apellido}`;
-                selectClientes.appendChild(option);
-            });
+        const response = await fetch(BASE_URL + '?r=procesar-venta', {
+            method: 'POST',
+            body: formData
+        });
+
+        const resultado = await response.json();
+
+        // --- 3. REACCIÓN a la respuesta del servidor ---
+        if (resultado.success && resultado.id_venta) {
+    
+            datosFacturaParaPDF.numeroFactura = resultado.id_venta;
+            
+            try {
+                generadorFactura.generarFactura(datosFacturaParaPDF);
+            } catch (pdfError) {
+                console.error('Error generando PDF:', pdfError);
+                alert('¡Venta guardada! Pero hubo un error al generar el PDF.');
+            }
+            
+            mostrarStockAlertModal('Venta procesada exitosamente.', '✅ Éxito');
+            carrito = [];
+            actualizarCarrito();
+            volverAlCarrito();
+            const form = document.getElementById('form-venta');
+            if (form) form.reset();
+            const grupoReferencia = document.getElementById('grupo-referencia');
+            if (grupoReferencia) grupoReferencia.style.display = 'none';
+
+        } else {
+            // El servidor reportó un error
+            mostrarStockAlertModal(`Error: ${resultado.error || 'No se pudo guardar la venta.'}`, '❌ Error');
         }
     } catch (error) {
-        console.error('Error cargando clientes:', error);
+        console.error('Error al enviar venta:', error);
+        mostrarStockAlertModal('Error de conexión. La venta no se guardó.', '❌ Error');
     }
 }
 
-// Procesar venta
-const formVenta = document.getElementById('form-venta');
-if (formVenta) {
-    formVenta.addEventListener('submit', async function(e) {
-        e.preventDefault();
+async function descargarFacturaHistorial(idVenta) {
+    // Mostrar modal de "Cargando"
+    mostrarStockAlertModal('Generando PDF...', '⏳ Espere por favor');
+
+    try {
+        // Buscar los datos de la factura en el servidor
+        const response = await fetch(`${BASE_URL}?r=get-datos-factura-json&id=${idVenta}`);
         
-        if (carrito.length === 0) {
-            mostrarStockAlertModal('El carrito de compras está vacío. Agregue productos antes de procesar la venta.');
-            return;
+        if (!response.ok) {
+            throw new Error('Error al obtener los datos de la factura.');
         }
-        
-        const formData = new FormData(this);
-        formData.append('carrito', JSON.stringify(carrito));
-        formData.append('tasa', tasaDelDia);
-        
-        try {
-            const response = await fetch(this.action, {
-                method: 'POST',
-                body: formData
-            });
-            
-            // Intentar parsear como JSON directamente
-            let resultado;
-            try {
-                resultado = await response.json();
-            } catch (jsonError) {
-                const text = await response.text();
-                console.error('Error al parsear JSON del servidor:', text.substring(0, 500));
-                mostrarStockAlertModal('Error inesperado en el servidor. Por favor, intente de nuevo más tarde.');
-                return;
-            }
-            
-            if (resultado.success) {
-                mostrarStockAlertModal('Venta procesada exitosamente.', '✅ Éxito');
-                // Reiniciar todo
-                carrito = [];
-                this.reset();
-                actualizarCarrito();
-                volverAlCarrito();
-                const grupoReferencia = document.getElementById('grupo-referencia');
-                if (grupoReferencia) grupoReferencia.style.display = 'none';
-            } else {
-                mostrarStockAlertModal('Error al procesar la venta: ' + resultado.error);
-            }
-        } catch (error) {
-            console.error('Error:', error);
-            mostrarStockAlertModal('Error de conexión al procesar la venta. Intente de nuevo.');
+
+        const datosFactura = await response.json();
+
+        if (datosFactura.error) {
+            throw new Error(datosFactura.error);
         }
-    });
+
+        // Llamar al generador de PDF
+        if (typeof generadorFactura !== 'undefined') {
+            generadorFactura.generarFactura(datosFactura);
+        } else {
+            alert('Error: El generador de PDF no está cargado.');
+        }
+
+    } catch (error) {
+        console.error('Error:', error);
+        mostrarStockAlertModal(error.message, '❌ Error');
+        
+    } finally {
+        // Ocultar el modal de "Cargando" 
+        setTimeout(() => {
+            if (typeof ocultarStockAlertModal !== 'undefined') {
+                ocultarStockAlertModal();
+            }
+        }, 500); 
+    }
+}
+
+// --- Variables y Funciones Globales para el Modal PDF ---
+let docGlobalParaDescarga = null;
+let nombreArchivoGlobal = 'factura.pdf';
+
+/*Muestra el modal con la vista previa del PDF.*/
+function mostrarPdfEnModal(doc, nombreArchivo) {
+    // Genera el PDF como un string de datos
+    const pdfDataUri = doc.output('datauristring');
+    
+    const modal = document.getElementById('pdf-preview-modal');
+    const iframe = document.getElementById('pdf-iframe');
+    
+    if (modal && iframe) {
+        iframe.src = pdfDataUri; 
+        modal.style.display = 'flex'; 
+    }
+
+    // Guarda el objeto 'doc' y el nombre para el botón de descarga
+    docGlobalParaDescarga = doc;
+    nombreArchivoGlobal = nombreArchivo;
+}
+
+function ocultarPdfModal() {
+    const modal = document.getElementById('pdf-preview-modal');
+    const iframe = document.getElementById('pdf-iframe');
+    
+    if (modal && iframe) {
+        modal.style.display = 'none';
+        iframe.src = '';
+    }
+    docGlobalParaDescarga = null;
 }
 
 // Hacer funciones disponibles globalmente
@@ -418,3 +564,6 @@ window.vaciarCarrito = vaciarCarrito;
 window.mostrarPasoPago = mostrarPasoPago;
 window.volverAlCarrito = volverAlCarrito;
 window.obtenerCarrito = obtenerCarrito;
+window.validarDatosParaPDF = validarDatosParaPDF;
+window.obtenerDatosParaFactura = obtenerDatosParaFactura;
+window.procesarVentaCompleta = procesarVentaCompleta;

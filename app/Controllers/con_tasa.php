@@ -74,5 +74,18 @@ class TasaController {
         }
         exit;
     }
+    public function historialTasas() {
+        // Usamos la misma lógica de seguridad que ya tienes
+        if (!isLoggedIn() || ($_SESSION['user']['rol'] ?? '') != 'administrador') {
+            header('Location: ' . BASE_URL . '?r=login');
+            exit;
+        }
+
+        $model = new TasaModel();
+        $tasas = $model->getHistorialTasas();
+
+        // Carga la vista y le pasa los datos
+        include __DIR__ . '/../Views/tasa/historial.php';
+    }
 }
 ?>

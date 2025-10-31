@@ -30,8 +30,8 @@ class VentasModel {
 
     private function _insertarCabeceraVenta($totalBs, $totalUsd, $metodoPago, $referenciaPago, $idUsuario, $idCliente, $idTasa) {
         $stmt = $this->pdo->prepare("INSERT INTO ventas 
-            (total_bs, total_usd, metodo_pago, referencia_pago, id_usuario, id_cliente, id_tasa) 
-            VALUES (?, ?, ?, ?, ?, ?, ?)");
+            (fecha, total_bs, total_usd, metodo_pago, referencia_pago, id_usuario, id_cliente, id_tasa) 
+            VALUES (CURDATE(), ?, ?, ?, ?, ?, ?, ?)");
         
         $stmt->execute([
             $totalBs, 
@@ -81,14 +81,14 @@ class VentasModel {
         $this->pdo->beginTransaction();
         
         try {
-            // === PASO 1: Obtener la tasa REAL usada en la venta ===
+            // Obtener la tasa REAL usada en la venta
             $tasaHoy = $this->getTasaById($idTasa);
             if (!$tasaHoy) {
                 throw new Exception("Tasa de cambio no encontrada para el ID: " . $idTasa);
             }
             $tasaRealParaVenta = (float) $tasaHoy['tasa'];
 
-            // === PASO 2: Validar STOCK de todos los productos ===
+            // Validar STOCK de todos los productos ===
             foreach ($carrito as $item) {
                 $idProducto = $item['id'];
                 $cantidadSolicitada = (int) $item['cantidad'];
@@ -99,7 +99,6 @@ class VentasModel {
                 }
             }
 
-            // === PASO 3: Insertar la CABECERA de la venta ===
             $idVenta = $this->_insertarCabeceraVenta(
                 $totalVentaBs, 
                 $totalVentaUsd, 
@@ -114,7 +113,7 @@ class VentasModel {
                 throw new Exception("Error al insertar la cabecera de la venta.");
             }
 
-            // === PASO 4: Insertar DETALLES y actualizar STOCK ===
+            // Insertar DETALLES y actualizar STOCK
             foreach ($carrito as $item) {
                 $idProducto = $item['id'];
                 $cantidad = (int) $item['cantidad'];
@@ -154,12 +153,17 @@ class VentasModel {
 
     public function getHistorialVentas($limit = 50) {
         $stmt = $this->pdo->prepare("SELECT v.*, u.usuario, c.nombre as cliente_nombre
-                                   FROM ventas v 
-                                   JOIN usuarios u ON v.id_usuario = u.id_usuario 
-                                   LEFT JOIN clientes c ON v.id_cliente = c.id_cliente
-                                   ORDER BY v.fecha DESC 
-                                   LIMIT ?");
-        $stmt->execute([$limit]);
+                                    FROM ventas v 
+                                    JOIN usuarios u ON v.id_usuario = u.id_usuario 
+                                    LEFT JOIN clientes c ON v.id_cliente = c.id_cliente
+                                    ORDER BY v.fecha DESC 
+                                    LIMIT ?");
+
+        $limit = (int)$limit; 
+        $stmt->bindValue(1, $limit, PDO::PARAM_INT);
+    
+        $stmt->execute(); 
+
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
@@ -173,6 +177,39 @@ class VentasModel {
         $stmt = $this->pdo->prepare("SELECT * FROM tasa_cambio WHERE id_tasa = ?");
         $stmt->execute([$idTasa]);
         return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+
+    /* Obtiene los datos principales de una sola venta */
+    public function getVentaCompletaPorId($idVenta) {
+        $sql = "SELECT 
+                    v.*, 
+                    u.usuario AS vendedor_nombre, 
+                    c.nombre AS cliente_nombre,
+                    t.tasa AS tasa_aplicada
+                FROM ventas v
+                JOIN usuarios u ON v.id_usuario = u.id_usuario
+                LEFT JOIN clientes c ON v.id_cliente = c.id_cliente
+                JOIN tasa_cambio t ON v.id_tasa = t.id_tasa
+                WHERE v.id_venta = ?";
+                
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute([$idVenta]);
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+
+    /*Obtiene los productos de una venta específica.*/
+    public function getDetalleVenta($idVenta) {
+        $sql = "SELECT 
+                    d.cantidad, 
+                    d.precio_unitario_usd,
+                    p.nombre_producto
+                FROM detalle_venta d
+                JOIN productos p ON d.id_producto = p.id_producto
+                WHERE d.id_venta = ?";
+                
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute([$idVenta]);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 }
 ?>
