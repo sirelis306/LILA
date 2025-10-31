@@ -14,14 +14,11 @@ class VentasController {
         $tasaModel = new TasaModel();
         $tasaHoy = $tasaModel->getTasaHoy();
 
-        // Puedes descomentar este bloque si quieres forzar al usuario a registrar la tasa antes de vender
-        /*
         if (!$tasaHoy) {
             $_SESSION['flash'] = "Debe registrar la tasa del día primero";
             header("Location: " . BASE_URL . "?r=form-tasa");
             exit;
         }
-        */
 
         include __DIR__ . '/../Views/ventas/form.php';
     }
