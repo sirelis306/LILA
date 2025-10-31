@@ -135,8 +135,16 @@ class VentasController {
             exit;
         }
 
+        $fecha_desde = $_GET['fecha_desde'] ?? null;
+        $fecha_hasta = $_GET['fecha_hasta'] ?? null;
+
+        if (empty($fecha_desde) && !empty($fecha_hasta)) {
+            $fecha_desde = $fecha_hasta;
+        }
+
         $model = new VentasModel();
-        $ventas = $model->getHistorialVentas();
+
+        $ventas = $model->getHistorialVentas($fecha_desde, $fecha_hasta); 
         
         include __DIR__ . '/../Views/ventas/historial.php';
     }

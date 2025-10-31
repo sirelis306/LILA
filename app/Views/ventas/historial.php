@@ -13,6 +13,31 @@ include __DIR__ . '/../shared/dashboard_layout.php';
 
 <div class="content-body">
     <div class="container">
+
+        <form method="GET" action="<?= BASE_URL ?>" class="filtro-fechas-form">
+            <input type="hidden" name="r" value="historial-ventas">
+            
+            <div class="input-group">
+                <input type="date" id="fecha_desde" name="fecha_desde" class="form-input" 
+                        value="<?= htmlspecialchars($_GET['fecha_desde'] ?? '') ?>"
+                        placeholder="Fecha Desde">
+                <label for="fecha_desde">Fecha Desde:</label> </div>
+            
+            <div class="input-group">
+                <input type="date" id="fecha_hasta" name="fecha_hasta" class="form-input"
+                        value="<?= htmlspecialchars($_GET['fecha_hasta'] ?? '') ?>"
+                        placeholder="Fecha Hasta">
+                <label for="fecha_hasta">Fecha Hasta:</label> </div>
+            
+            <button type="submit" class="btn btn-search" title="Buscar">
+                <i class="fi fi-rr-search"></i> Buscar
+            </button>
+            
+            <a href="<?= BASE_URL ?>?r=historial-ventas" class="btn btn-clear" title="Limpiar filtro">
+                <i class="fi fi-rr-refresh"></i>
+            </a>
+        </form>
+
         <div class="inventario-table-container"> 
             <table id="tabla-historial-ventas" class="inventario-table" style="width: 100%;">
                 <thead>

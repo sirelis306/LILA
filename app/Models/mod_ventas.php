@@ -151,32 +151,50 @@ class VentasModel {
         }
     }
 
-    public function getHistorialVentas($limit = 50) {
-        $stmt = $this->pdo->prepare("SELECT v.*, u.usuario, c.nombre as cliente_nombre
-                                    FROM ventas v 
-                                    JOIN usuarios u ON v.id_usuario = u.id_usuario 
-                                    LEFT JOIN clientes c ON v.id_cliente = c.id_cliente
-                                    ORDER BY v.fecha DESC 
-                                    LIMIT ?");
+    public function getHistorialVentas($fecha_desde = null, $fecha_hasta = null, $limit = 50) {
+        
+        // Consulta base
+        $sql_base = "SELECT v.*, u.usuario, c.nombre as cliente_nombre
+                    FROM ventas v 
+                    JOIN usuarios u ON v.id_usuario = u.id_usuario 
+                    LEFT JOIN clientes c ON v.id_cliente = c.id_cliente";
 
-        $limit = (int)$limit; 
-        $stmt->bindValue(1, $limit, PDO::PARAM_INT);
-    
-        $stmt->execute(); 
+        $where_conditions = [];
+        $parameters = [];
 
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
-    }
+        // Construir el WHERE dinámicamente
+        if (!empty($fecha_desde)) {
+            $where_conditions[] = "DATE(v.fecha) >= ?";
+            $parameters[] = $fecha_desde;
+        }
 
-    public function getClientes() {
-        $stmt = $this->pdo->prepare("SELECT * FROM clientes WHERE activo = 1 ORDER BY nombre");
+        if (!empty($fecha_hasta)) {
+            $where_conditions[] = "DATE(v.fecha) <= ?";
+            $parameters[] = $fecha_hasta;
+        }
+
+        // Unir la consulta
+        $sql = $sql_base;
+        if (count($where_conditions) > 0) {
+            $sql .= " WHERE " . implode(" AND ", $where_conditions);
+        }
+
+        // Añadir el ORDEN y el LÍMITE
+        $sql .= " ORDER BY v.fecha DESC LIMIT ?";
+
+        // Preparar la consulta
+        $stmt = $this->pdo->prepare($sql);
+
+        // Vincular los parámetros de fecha 
+        $param_index = 1;
+        foreach ($parameters as $param) {
+            $stmt->bindValue($param_index, $param, PDO::PARAM_STR);
+            $param_index++;
+        }
+
+        $stmt->bindValue($param_index, (int)$limit, PDO::PARAM_INT);
         $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
-    }
-
-    public function getTasaById($idTasa) {
-        $stmt = $this->pdo->prepare("SELECT * FROM tasa_cambio WHERE id_tasa = ?");
-        $stmt->execute([$idTasa]);
-        return $stmt->fetch(PDO::FETCH_ASSOC);
     }
 
     /* Obtiene los datos principales de una sola venta */
