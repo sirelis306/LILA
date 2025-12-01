@@ -1,6 +1,7 @@
 <?php
 require_once __DIR__ . "/../Models/mod_ventas.php";
 require_once __DIR__ . "/../Models/mod_tasa.php";
+require_once __DIR__ . "/../Models/mod_cliente.php";
 require_once __DIR__ . "/../Helpers/auth.php"; 
 require_once __DIR__ . "/../Helpers/csrf.php"; 
 
@@ -19,6 +20,10 @@ class VentasController {
             header("Location: " . BASE_URL . "?r=form-tasa");
             exit;
         }
+
+        // Cargar clientes para el select
+        $clienteModel = new ClienteModel();
+        $clientes = $clienteModel->getClientesParaSelect();
 
         include __DIR__ . '/../Views/ventas/form.php';
     }

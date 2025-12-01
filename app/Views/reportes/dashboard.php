@@ -1,50 +1,25 @@
 <?php
-$titulo = "Panel de Administrador";
-include __DIR__ . '/shared/dashboard_layout.php';
+$titulo = "Reportes de Ventas";
+include __DIR__ . '/../shared/dashboard_layout.php';
 ?>
 
-<div class="dashboard-grid">
-    <!-- Tarjeta 1: Gestión de Tasas -->
-    <div class="dashboard-card">
-        <h3 class="card-title">Gestión de Tasas</h3>
-        <p class="card-label">Administra la tasa de cambio del día.</p>
-        <a href="<?= BASE_URL ?>?r=form-tasa" class="btn btn-primary">Gestionar Tasas</a>
-    </div>
+<?php include __DIR__ . '/../shared/flash.php'; ?>
 
-    <!-- Tarjeta 2: Módulo de Ventas -->
-    <div class="dashboard-card">
-        <h3 class="card-title">Módulo de Ventas</h3>
-        <p class="card-label">Revisa el historial de transacciones.</p>
-        <a href="<?= BASE_URL ?>?r=ventas" class="btn btn-success">Ir a Ventas</a>
-    </div>
-
-    <!-- Tarjeta 3: Gestión de Inventario -->
-    <div class="dashboard-card">
-        <h3 class="card-title">Gestión de Inventario</h3>
-        <p class="card-label">Administra productos y stock.</p>
-        <a href="<?= BASE_URL ?>?r=inventario" class="btn btn-success">Ir a Inventario</a>
-    </div>
-
-    <!-- Tarjeta 4: Gestión de Usuarios -->
-    <div class="dashboard-card">
-        <h3 class="card-title">Gestión de Usuarios</h3>
-        <p class="card-label">Administra usuarios y restablece contraseñas.</p>
-        <a href="<?= BASE_URL ?>?r=usuarios" class="btn btn-primary">Gestionar Usuarios</a>
-    </div>
-</div>
-
-<?php
-// Bloque de reportes directamente en el dashboard
-require_once __DIR__ . '/../Models/mod_ventas.php';
-
-$ventasModel = new VentasModel();
-$ventasSemanales = $ventasModel->getVentasSemanales();
-$topProductos = $ventasModel->getTopProductosMasVendidos(5);
-$productoMasVendido = $topProductos[0] ?? null;
-?>
-
-<section class="reportes-dashboard" style="margin-top: 30px;">
+<div class="content-body">
     <div class="dashboard-grid">
+        <!-- Info de permisos -->
+        <div class="dashboard-card" style="grid-column: 1 / -1; padding: 12px 16px;">
+            <?php if (!empty($esAdmin) && $esAdmin): ?>
+                <p class="card-label">
+                    Estás viendo los reportes como <strong>Administrador</strong>. Puedes usar esta información para gestionar el negocio y tomar decisiones.
+                </p>
+            <?php else: ?>
+                <p class="card-label">
+                    Estás viendo los reportes como <strong>Empleado</strong>. Esta vista es solo de consulta, sin opciones de gestión.
+                </p>
+            <?php endif; ?>
+        </div>
+
         <!-- Ventas semanales -->
         <div class="dashboard-card">
             <h3 class="card-title">Ventas de la última semana</h3>
@@ -97,8 +72,11 @@ $productoMasVendido = $topProductos[0] ?? null;
             <canvas id="chartTopProductos"></canvas>
         </div>
     </div>
-</section>
+</div>
 
+<?php include __DIR__ . '/../shared/dashboard_end.php'; ?>
+
+<!-- Datos para JS -->
 <script>
     window.__LILA_REPORTES__ = {
         ventasSemanales: <?= json_encode($ventasSemanales) ?>,
@@ -108,4 +86,4 @@ $productoMasVendido = $topProductos[0] ?? null;
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="<?= BASE_URL ?>js/reportes_dashboard.js?v=1.0"></script>
 
-<?php include __DIR__ . '/shared/dashboard_end.php'; ?>
+

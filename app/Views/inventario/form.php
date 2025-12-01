@@ -101,7 +101,7 @@ include __DIR__ . '/../shared/dashboard_layout.php';
                             <input type="text" name="categoria" class="form-input" 
                                 list="categorias-sugeridas"
                                 value="<?= htmlspecialchars($producto['categoria'] ?? 'General') ?>"
-                                placeholder="Ej: Alimentos, Bebidas, etc.">
+                                placeholder="Ej: Aluminio, Vidrio, etc.">
                             
                             <datalist id="categorias-sugeridas">
                                 <option value="General">

@@ -13,6 +13,7 @@ function loginUser(array $user): void {
     'id'   => $user['id_usuario'],
     'user' => $user['usuario'],
     'rol'  => $user['rol'], // 'admin' o 'empleado' (o enum equivalente)
+    'nombre' => $user['nombre'] ?? $user['usuario'], // Nombre o usuario como fallback
   ];
 }
 

@@ -574,3 +574,437 @@
     [imagen] => 68fad702635f6.png
 )
 
+[2025-12-01 02:37:17] === INICIO DE GUARDAR PRODUCTO ===
+[2025-12-01 02:37:17] POST: Array
+(
+    [nombre_producto] => Tasa
+    [codigo_barras] => 2346889
+    [cantidad] => 40
+    [descripcion] => Tasa de Vidrio
+    [tamano] => Mediano
+    [categoria] => Vidrio
+    [precio_bs] => 1200.00
+    [precio_usd] => 10.00
+)
+
+[2025-12-01 02:37:17] FILES: Array
+(
+    [imagen] => Array
+        (
+            [name] => 
+            [full_path] => 
+            [type] => 
+            [tmp_name] => 
+            [error] => 4
+            [size] => 0
+        )
+
+)
+
+[2025-12-01 02:37:17] ⚠️ No se subió imagen ni se mantuvo la actual.
+[2025-12-01 02:37:17] Datos a guardar: Array
+(
+    [id_producto] => 
+    [nombre_producto] => Tasa
+    [descripcion] => Tasa de Vidrio
+    [tamano] => Mediano
+    [categoria] => Vidrio
+    [cantidad] => 40
+    [codigo_barras] => 2346889
+    [precio_bs] => 1200.00
+    [precio_usd] => 10.00
+    [imagen] => 
+)
+
+[2025-12-01 02:37:17] ❌ ERROR: SQLSTATE[HY093]: Invalid parameter number: number of bound variables does not match number of tokens
+[2025-12-01 02:38:06] === INICIO DE GUARDAR PRODUCTO ===
+[2025-12-01 02:38:06] POST: Array
+(
+    [nombre_producto] => Tasa
+    [codigo_barras] => 2346889
+    [cantidad] => 40
+    [descripcion] => Tasa de Vidrio
+    [tamano] => Mediano
+    [categoria] => Vidrio
+    [precio_bs] => 1200.00
+    [precio_usd] => 10.00
+)
+
+[2025-12-01 02:38:06] FILES: Array
+(
+    [imagen] => Array
+        (
+            [name] => 
+            [full_path] => 
+            [type] => 
+            [tmp_name] => 
+            [error] => 4
+            [size] => 0
+        )
+
+)
+
+[2025-12-01 02:38:06] ⚠️ No se subió imagen ni se mantuvo la actual.
+[2025-12-01 02:38:06] Datos a guardar: Array
+(
+    [id_producto] => 
+    [nombre_producto] => Tasa
+    [descripcion] => Tasa de Vidrio
+    [tamano] => Mediano
+    [categoria] => Vidrio
+    [cantidad] => 40
+    [codigo_barras] => 2346889
+    [precio_bs] => 1200.00
+    [precio_usd] => 10.00
+    [imagen] => 
+)
+
+[2025-12-01 02:38:06] ❌ ERROR: SQLSTATE[HY093]: Invalid parameter number: number of bound variables does not match number of tokens
+[2025-12-01 02:49:18] === INICIO DE GUARDAR PRODUCTO ===
+[2025-12-01 02:49:18] POST: Array
+(
+    [nombre_producto] => Tasa
+    [codigo_barras] => 2346889
+    [cantidad] => 40
+    [descripcion] => Tasa de Vidrio
+    [tamano] => Mediano
+    [categoria] => Vidrio
+    [precio_bs] => 2400.00
+    [precio_usd] => 20.00
+)
+
+[2025-12-01 02:49:18] FILES: Array
+(
+    [imagen] => Array
+        (
+            [name] => 
+            [full_path] => 
+            [type] => 
+            [tmp_name] => 
+            [error] => 4
+            [size] => 0
+        )
+
+)
+
+[2025-12-01 02:49:18] ⚠️ No se subió imagen ni se mantuvo la actual.
+[2025-12-01 02:49:18] Datos a guardar: Array
+(
+    [id_producto] => 
+    [nombre_producto] => Tasa
+    [descripcion] => Tasa de Vidrio
+    [tamano] => Mediano
+    [categoria] => Vidrio
+    [cantidad] => 40
+    [codigo_barras] => 2346889
+    [precio_bs] => 2400.00
+    [precio_usd] => 20.00
+    [imagen] => 
+)
+
+[2025-12-01 02:50:03] === INICIO DE GUARDAR PRODUCTO ===
+[2025-12-01 02:50:03] POST: Array
+(
+    [id_producto] => 5
+    [nombre_producto] => Tasa
+    [codigo_barras] => 2346889
+    [cantidad] => 40
+    [descripcion] => Tasa de Vidrio
+    [tamano] => Mediano
+    [categoria] => Vidrio
+    [precio_bs] => 2400.00
+    [precio_usd] => 20.00
+)
+
+[2025-12-01 02:50:03] FILES: Array
+(
+    [imagen] => Array
+        (
+            [name] => tasa.jpg
+            [full_path] => tasa.jpg
+            [type] => image/jpeg
+            [tmp_name] => C:\xampp\tmp\phpA0E0.tmp
+            [error] => 0
+            [size] => 20034
+        )
+
+)
+
+[2025-12-01 02:50:03] ✅ Imagen recibida: tasa.jpg
+[2025-12-01 02:50:03] ✅ Imagen guardada como: 692cf44bbd688.jpg
+[2025-12-01 02:50:03] Datos a guardar: Array
+(
+    [id_producto] => 5
+    [nombre_producto] => Tasa
+    [descripcion] => Tasa de Vidrio
+    [tamano] => Mediano
+    [categoria] => Vidrio
+    [cantidad] => 40
+    [codigo_barras] => 2346889
+    [precio_bs] => 2400.00
+    [precio_usd] => 20.00
+    [imagen] => 692cf44bbd688.jpg
+)
+
+[2025-12-01 02:53:51] === INICIO DE GUARDAR PRODUCTO ===
+[2025-12-01 02:53:51] POST: Array
+(
+    [nombre_producto] => Plato
+    [codigo_barras] => 34986780
+    [cantidad] => 60
+    [descripcion] => Plato de Vidrio
+    [tamano] => Grande
+    [categoria] => Vidrio
+    [precio_bs] => 600.00
+    [precio_usd] => 5.00
+)
+
+[2025-12-01 02:53:51] FILES: Array
+(
+    [imagen] => Array
+        (
+            [name] => plato.jpg
+            [full_path] => plato.jpg
+            [type] => image/jpeg
+            [tmp_name] => C:\xampp\tmp\php1A58.tmp
+            [error] => 0
+            [size] => 3512
+        )
+
+)
+
+[2025-12-01 02:53:51] ✅ Imagen recibida: plato.jpg
+[2025-12-01 02:53:51] ✅ Imagen guardada como: 692cf52f7495d.jpg
+[2025-12-01 02:53:51] Datos a guardar: Array
+(
+    [id_producto] => 
+    [nombre_producto] => Plato
+    [descripcion] => Plato de Vidrio
+    [tamano] => Grande
+    [categoria] => Vidrio
+    [cantidad] => 60
+    [codigo_barras] => 34986780
+    [precio_bs] => 600.00
+    [precio_usd] => 5.00
+    [imagen] => 692cf52f7495d.jpg
+)
+
+[2025-12-01 02:55:35] === INICIO DE GUARDAR PRODUCTO ===
+[2025-12-01 02:55:35] POST: Array
+(
+    [nombre_producto] => Tubo de Aluminio
+    [codigo_barras] => 679iy53
+    [cantidad] => 30
+    [descripcion] => Tubo de Aluminio
+    [tamano] => 300 cm
+    [categoria] => Aluminio
+    [precio_bs] => 300.00
+    [precio_usd] => 2.50
+)
+
+[2025-12-01 02:55:35] FILES: Array
+(
+    [imagen] => Array
+        (
+            [name] => 
+            [full_path] => 
+            [type] => 
+            [tmp_name] => 
+            [error] => 4
+            [size] => 0
+        )
+
+)
+
+[2025-12-01 02:55:35] ⚠️ No se subió imagen ni se mantuvo la actual.
+[2025-12-01 02:55:35] Datos a guardar: Array
+(
+    [id_producto] => 
+    [nombre_producto] => Tubo de Aluminio
+    [descripcion] => Tubo de Aluminio
+    [tamano] => 300 cm
+    [categoria] => Aluminio
+    [cantidad] => 30
+    [codigo_barras] => 679iy53
+    [precio_bs] => 300.00
+    [precio_usd] => 2.50
+    [imagen] => 
+)
+
+[2025-12-01 02:55:44] === INICIO DE GUARDAR PRODUCTO ===
+[2025-12-01 02:55:44] POST: Array
+(
+    [id_producto] => 7
+    [nombre_producto] => Tubo de Aluminio
+    [codigo_barras] => 6798900
+    [cantidad] => 30
+    [descripcion] => Tubo de Aluminio
+    [tamano] => 300 cm
+    [categoria] => Aluminio
+    [precio_bs] => 300.00
+    [precio_usd] => 2.50
+)
+
+[2025-12-01 02:55:44] FILES: Array
+(
+    [imagen] => Array
+        (
+            [name] => 
+            [full_path] => 
+            [type] => 
+            [tmp_name] => 
+            [error] => 4
+            [size] => 0
+        )
+
+)
+
+[2025-12-01 02:55:44] ⚠️ No se subió imagen ni se mantuvo la actual.
+[2025-12-01 02:55:44] Datos a guardar: Array
+(
+    [id_producto] => 7
+    [nombre_producto] => Tubo de Aluminio
+    [descripcion] => Tubo de Aluminio
+    [tamano] => 300 cm
+    [categoria] => Aluminio
+    [cantidad] => 30
+    [codigo_barras] => 6798900
+    [precio_bs] => 300.00
+    [precio_usd] => 2.50
+    [imagen] => 
+)
+
+[2025-12-01 02:55:54] === INICIO DE GUARDAR PRODUCTO ===
+[2025-12-01 02:55:54] POST: Array
+(
+    [id_producto] => 7
+    [nombre_producto] => Tubo de Aluminio
+    [codigo_barras] => 6798900
+    [cantidad] => 30
+    [descripcion] => Tubo de Aluminio
+    [tamano] => 300 cm
+    [categoria] => Aluminio
+    [precio_bs] => 300.00
+    [precio_usd] => 2.50
+)
+
+[2025-12-01 02:55:54] FILES: Array
+(
+    [imagen] => Array
+        (
+            [name] => tubo.webp
+            [full_path] => tubo.webp
+            [type] => image/webp
+            [tmp_name] => C:\xampp\tmp\phpF979.tmp
+            [error] => 0
+            [size] => 10454
+        )
+
+)
+
+[2025-12-01 02:55:54] ✅ Imagen recibida: tubo.webp
+[2025-12-01 02:55:54] ❌ ERROR: Formato no permitido. Use JPG, PNG, GIF o WebP.
+[2025-12-01 03:00:37] === INICIO DE GUARDAR PRODUCTO ===
+[2025-12-01 03:00:37] POST: Array
+(
+    [id_producto] => 7
+    [nombre_producto] => Tubo de Aluminio
+    [codigo_barras] => 6798900
+    [cantidad] => 30
+    [descripcion] => Tubo de Aluminio
+    [tamano] => 300 cm
+    [categoria] => Aluminio
+    [precio_bs] => 300.00
+    [precio_usd] => 2.50
+)
+
+[2025-12-01 03:00:37] FILES: Array
+(
+    [imagen] => Array
+        (
+            [name] => t.webp
+            [full_path] => t.webp
+            [type] => image/webp
+            [tmp_name] => C:\xampp\tmp\php4C98.tmp
+            [error] => 0
+            [size] => 10454
+        )
+
+)
+
+[2025-12-01 03:00:37] ✅ Imagen recibida: t.webp
+[2025-12-01 03:00:37] ❌ ERROR: Formato no permitido. Use JPG, PNG o WebP.
+[2025-12-01 03:00:52] === INICIO DE GUARDAR PRODUCTO ===
+[2025-12-01 03:00:52] POST: Array
+(
+    [id_producto] => 7
+    [nombre_producto] => Tubo de Aluminio
+    [codigo_barras] => 6798900
+    [cantidad] => 30
+    [descripcion] => Tubo de Aluminio
+    [tamano] => 300 cm
+    [categoria] => Aluminio
+    [precio_bs] => 300.00
+    [precio_usd] => 2.50
+)
+
+[2025-12-01 03:00:52] FILES: Array
+(
+    [imagen] => Array
+        (
+            [name] => tubo.webp
+            [full_path] => tubo.webp
+            [type] => image/webp
+            [tmp_name] => C:\xampp\tmp\php88E6.tmp
+            [error] => 0
+            [size] => 26852
+        )
+
+)
+
+[2025-12-01 03:00:52] ✅ Imagen recibida: tubo.webp
+[2025-12-01 03:00:52] ❌ ERROR: Formato no permitido. Use JPG, PNG o WebP.
+[2025-12-01 03:01:59] === INICIO DE GUARDAR PRODUCTO ===
+[2025-12-01 03:01:59] POST: Array
+(
+    [id_producto] => 7
+    [nombre_producto] => Tubo de Aluminio
+    [codigo_barras] => 6798900
+    [cantidad] => 30
+    [descripcion] => Tubo de Aluminio
+    [tamano] => 300 cm
+    [categoria] => Aluminio
+    [precio_bs] => 300.00
+    [precio_usd] => 2.50
+)
+
+[2025-12-01 03:01:59] FILES: Array
+(
+    [imagen] => Array
+        (
+            [name] => tubo.png
+            [full_path] => tubo.png
+            [type] => image/png
+            [tmp_name] => C:\xampp\tmp\php8CAB.tmp
+            [error] => 0
+            [size] => 26852
+        )
+
+)
+
+[2025-12-01 03:01:59] ✅ Imagen recibida: tubo.png
+[2025-12-01 03:01:59] ✅ Imagen guardada como: 692cf7177839a.png
+[2025-12-01 03:01:59] Datos a guardar: Array
+(
+    [id_producto] => 7
+    [nombre_producto] => Tubo de Aluminio
+    [descripcion] => Tubo de Aluminio
+    [tamano] => 300 cm
+    [categoria] => Aluminio
+    [cantidad] => 30
+    [codigo_barras] => 6798900
+    [precio_bs] => 300.00
+    [precio_usd] => 2.50
+    [imagen] => 692cf7177839a.png
+)
+

@@ -35,7 +35,7 @@ class InventarioModel {
     $porPagina = (int)$porPagina;
     $offset = ($pagina - 1) * $porPagina;
     
-    // PRIMERO obtener el TOTAL (rápido)
+    // PRIMERO obtener el TOTAL 
     $sqlCount = "SELECT COUNT(*) as total FROM productos WHERE 1=1";
     $paramsCount = [];
     
@@ -124,7 +124,7 @@ class InventarioModel {
     } else {
         $sql = "INSERT INTO productos 
                 (nombre_producto, descripcion, tamano, categoria, cantidad, codigo_barras, precio_bs, precio_usd, imagen) 
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
         $stmt = $this->pdo->prepare($sql);
         return $stmt->execute([
@@ -151,13 +151,13 @@ class InventarioModel {
 
     // Función para subir imagen
     public function subirImagen($archivo) {
-        $permitidos = ['jpg', 'jpeg', 'png'];
+        $permitidos = ['jpg', 'jpeg', 'png', 'WebP'];
         $maxSize = 2 * 1024 * 1024; // 2MB
         
         // Validar tipo de archivo
         $extension = strtolower(pathinfo($archivo['name'], PATHINFO_EXTENSION));
         if (!in_array($extension, $permitidos)) {
-            throw new Exception('Formato no permitido. Use JPG, PNG, GIF o WebP.');
+            throw new Exception('Formato no permitido. Use JPG, PNG o WebP.');
         }
         
         // Validar tamaño

@@ -200,7 +200,11 @@ include __DIR__ . '/../shared/dashboard_layout.php';
                     <label class="form-label">Cliente:</label>
                     <select name="id_cliente" class="form-input">
                         <option value="">Cliente ocasional</option>
-                        <!-- Opciones de clientes -->
+                        <?php foreach ($clientes as $cliente): ?>
+                            <option value="<?= $cliente['id_cliente'] ?>">
+                                <?= htmlspecialchars($cliente['nombre_completo']) ?>
+                            </option>
+                        <?php endforeach; ?>
                     </select>
                 </div>
 

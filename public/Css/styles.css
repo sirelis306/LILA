@@ -1,5 +1,5 @@
 /* ==================== */
-/* VARIABLES - NUEVA PALETA DE COLORES */
+/* VARIABLES */
 /* ==================== */
 :root {
     --azul-oscuro: #141743;
@@ -42,7 +42,7 @@ body {
 /* SIDEBAR - NAVEGACIÓN */
 /* ==================== */
 .sidebar {
-    width: 80px; /* Le damos un poco más de espacio base */
+    width: 80px; 
     background: var(--azul-oscuro);
     color: var(--blanco);
     padding: 0;
@@ -59,31 +59,31 @@ body {
 .sidebar-header {
     padding: 15px 0;
     display: flex;
-    justify-content: center; /* Centra el contenido (el logo) */
+    justify-content: center;
     align-items: center;
     width: 100%;
-    min-height: 90px; /* Altura mínima para que todo quepa bien */
+    min-height: 90px; 
     background: var(--azul-oscuro);
     border-bottom: 1px solid var(--purpura-vibrante);
-    box-sizing: border-box; /* Importante para el cálculo del tamaño */
+    box-sizing: border-box; 
 }
 
 .sidebar:hover .sidebar-header {
-    justify-content: flex-start; /* Mueve el logo y el texto a la izquierda */
+    justify-content: flex-start; 
     padding-left: 15px;
 }
 
 .sidebar-logo {
-    width: 70px; /* Tamaño del logo en modo colapsado */
+    width: 70px; 
     height: auto;
     border-radius: 8px;
     object-fit: contain;
     transition: width 0.3s ease;
-    flex-shrink: 0; /* Evita que el logo se encoja */
+    flex-shrink: 0; 
 }
 
 .sidebar:hover .sidebar-logo {
-    width: 80px; /* Tamaño del logo en modo expandido */
+    width: 80px; 
 }
 
 .logo-text {
@@ -121,20 +121,20 @@ body {
 .sidebar-link {
     display: flex;
     align-items: center;
-    padding: 12px 24px; /* Padding ajustado para centrar ícono */
+    padding: 12px 24px;
     color: var(--gris-claro);
     text-decoration: none;
     transition: all 0.3s ease;
     border-left: 4px solid transparent;
     width: 100%;
     box-sizing: border-box;
-    justify-content: center; /* Ícono centrado en modo colapsado */
+    justify-content: center; 
 }
 
 /* Nueva regla para controlar el estado expandido */
 .sidebar:hover .sidebar-link {
-    justify-content: flex-start; /* Alineación a la izquierda */
-    padding: 12px 12px;       /* Padding original */
+    justify-content: flex-start; 
+    padding: 12px 12px;       
 }
 
 .sidebar-link i {
@@ -147,7 +147,6 @@ body {
     min-width: 24px;
     text-align: center;
     transition: font-size 0.3s ease;
-    /* Quitamos el margin-right aquí para un mejor control */
 }
 
 .sidebar-link span {
@@ -155,13 +154,13 @@ body {
     width: 0;
     overflow: hidden;
     transition: opacity 0.2s ease, width 0.2s ease;
-    white-space: nowrap; /* Evita que el texto se parta */
+    white-space: nowrap; 
 }
 
 .sidebar:hover .sidebar-link span {
     opacity: 1;
     width: auto;
-    margin-left: 15px; /* Añadimos el margen aquí */
+    margin-left: 15px; 
 }
 
 .sidebar-link:hover,
@@ -230,26 +229,44 @@ body {
     text-align: center;
 }
 
-.login-logo {
-    margin-bottom: 30px;
+
+.login-form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
 }
 
-.login-logo h1 {
+.login-logo {
+    display: flex; 
+    align-items: center; 
+    justify-content: center; 
+    margin-bottom: 30px;
+    gap: 15px; 
+}
+
+.login-img {
+    max-width: 100px; 
+    height: auto;
+}
+
+/* El grupo de texto mantiene la alineación vertical */
+.login-text-group {
+    text-align: left; 
+}
+
+.login-logo h2 {
     color: var(--azul-oscuro);
     font-size: 28px;
     font-weight: 700;
+    margin: 0; 
+    line-height: 1.1;
 }
 
 .login-logo p {
     color: var(--texto-claro);
     font-size: 14px;
     margin-top: 5px;
-}
-
-.login-form {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
+    line-height: 1.1;
 }
 
 /* ==================== */
@@ -682,8 +699,6 @@ body {
     vertical-align: middle;
     font-weight: 500;
     color: #333;
-    
-    /* Quitar todos los bordes de tarjeta */
     border: none;
 }
 
@@ -1198,16 +1213,16 @@ body {
 /* ==================== */
 
 .ventas-container {
-    margin-top: 10px; /* Reducir espacio superior */
+    margin-top: 10px; 
 }
 
 .columna-ventas h3 {
-    margin-top: 0; /* Quitar margen de títulos */
+    margin-top: 0; 
     padding-top: 0;
 }
 
 .content-body {
-    padding-top: 15px; /* Reducir padding superior */
+    padding-top: 15px; 
 }
 
 .main-content {
@@ -1215,7 +1230,7 @@ body {
 }
 
 .content-header {
-    padding: 15px 30px; /* Header más compacto */
+    padding: 15px 30px; 
     margin-bottom: 0;
 }
 
@@ -1307,8 +1322,8 @@ body {
 .search-form {
     flex-grow: 1;
     display: flex;
-    align-items: center; /* Alinea la búsqueda y el select */
-    gap: 15px; /* Espacio entre la búsqueda y el select */
+    align-items: center; 
+    gap: 15px; 
 }
 
 /* El CONTENEDOR UNIFICADO para búsqueda y select */
@@ -1319,8 +1334,8 @@ body {
     border-radius: 8px;
     border: 1px solid var(--color-borde, #d1d8e0);
     box-shadow: 0 4px 15px var(--sombra);
-    height: 55px; /* Altura fija para consistencia */
-    padding: 0 5px 0 0; /* Padding a la derecha para el botón */
+    height: 55px; 
+    padding: 0 5px 0 0;
     transition: border-color 0.3s ease, box-shadow 0.3s ease;
 }
 
@@ -1329,7 +1344,7 @@ body {
     box-shadow: 0 0 0 3px rgba(93, 83, 195, 0.2);
 }
 
-/* Input de texto y Select (estilos compartidos) */
+/* Input de texto y Select  */
 .form-group-container .form-input,
 .form-group-container select {
     flex-grow: 1;
@@ -1346,7 +1361,7 @@ body {
 /* Estilos específicos para el select para quitar la apariencia nativa */
 .form-group-container select {
     cursor: pointer;
-    padding-right: 40px; /* Espacio para la flecha */
+    padding-right: 40px; 
     -webkit-appearance: none;
     -moz-appearance: none;
     appearance: none;
@@ -1355,12 +1370,12 @@ body {
 /* Contenedor del select para posicionar la flecha */
 .select-wrapper {
     position: relative;
-    padding: 0; /* Quitamos el padding del contenedor porque el select ya lo tiene */
-    flex-shrink: 0; /* Evita que el select se encoja */
-    width: 200px; /* Ancho fijo para el select de categorías */
+    padding: 0; 
+    flex-shrink: 0; 
+    width: 200px; 
 }
 
-/* Flecha del select (hecha con un SVG para máxima compatibilidad) */
+/* Flecha del select */
 .select-wrapper::after {
     content: '';
     position: absolute;
@@ -1384,9 +1399,9 @@ body {
     cursor: pointer;
     font-size: 18px; 
     transition: all 0.3s ease;
-    width: 40px; /* Ajustamos tamaño */
-    height: 40px; /* Ajustamos tamaño */
-    flex-shrink: 0; /* Evita que se encoja */
+    width: 40px; 
+    height: 40px; 
+    flex-shrink: 0; 
     display: flex;
     align-items: center;
     justify-content: center;
@@ -1397,8 +1412,8 @@ body {
 
 /* Botón de "Agregar Producto" (fuera del contenedor) */
 .btn-agregar-producto {
-    padding: 0 25px; /* Ajustamos padding */
-    height: 50px; /* Misma altura que los contenedores */
+    padding: 0 25px; 
+    height: 50px;
     font-size: 16px;
     border-radius: 8px;
     display: flex;
@@ -1411,7 +1426,7 @@ body {
     cursor: pointer;
     transition: all 0.3s ease;
     text-decoration: none;
-    white-space: nowrap; /* Evita que el texto se parta */
+    white-space: nowrap; 
 }
 .btn-agregar-producto:hover {
     background: var(--azul-oscuro);
@@ -1466,7 +1481,7 @@ body {
     height: 40px;
     object-fit: contain;
     padding: 5px;
-    background: var(--azul-claro); /* Fondo claro para la imagen */
+    background: var(--azul-claro); 
     border-radius: 4px;
     border: 1px solid var(--borde);
 }
@@ -1499,7 +1514,7 @@ body {
 
 /* Estilo para stock 'Agotado' */
 .stock-agotado {
-    color: #ff4d4d; /* Rojo */
+    color: #ff4d4d; 
     font-weight: 700;
     font-size: 14px;
 }
@@ -1618,7 +1633,7 @@ body {
 /* Seccion Lateral Izquierda (Imagen y Acciones de Imagen) */
 .sidebar-image-upload {
     width: 250px; 
-    flex-shrink: 0; /* No se encoge */
+    flex-shrink: 0; 
     background: var(--fondo-claro, #f7f7f9); 
     padding: 30px;
     border-right: 1px solid var(--borde);
@@ -1662,7 +1677,7 @@ body {
     height: 100%;
     object-fit: cover;
     border-radius: 6px;
-    background: var(--blanco); /* Fondo blanco para evitar checkerboard */
+    background: var(--blanco);
     display: block;
 }
 /* Botón Subir Imagen */
@@ -1701,14 +1716,14 @@ body {
 .producto-form .form-input {
     width: 100%;
     padding: 12px 15px;
-    border: 1px solid var(--borde); /* Borde más fino */
+    border: 1px solid var(--borde); 
     border-radius: 6px;
     font-size: 16px;
     background: var(--blanco);
     margin-bottom: 0;
 }
 
-/* Campos de Stock y Precio (si están debajo del input) */
+/* Campos de Stock y Precio */
 .form-text-small {
     font-size: 12px;
     color: var(--texto-claro);
@@ -1738,7 +1753,7 @@ body {
 
 .btn-cancel {
     background: none;
-    color: var(--texto-principal, #333); /* Color de texto estándar */
+    color: var(--texto-principal, #333); 
     padding: 10px 20px;
     border: 1px solid var(--borde);
     border-radius: 6px;

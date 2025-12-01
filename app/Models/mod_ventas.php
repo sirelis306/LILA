@@ -28,6 +28,12 @@ class VentasModel {
         return $result ? (int) $result['cantidad'] : 0;
     }
 
+    public function getTasaById($idTasa) {
+        $stmt = $this->pdo->prepare("SELECT tasa FROM tasa_cambio WHERE id_tasa = ?");
+        $stmt->execute([$idTasa]);
+        return $stmt->fetch(PDO::FETCH_ASSOC); 
+    }
+
     private function _insertarCabeceraVenta($totalBs, $totalUsd, $metodoPago, $referenciaPago, $idUsuario, $idCliente, $idTasa) {
         $stmt = $this->pdo->prepare("INSERT INTO ventas 
             (fecha, total_bs, total_usd, metodo_pago, referencia_pago, id_usuario, id_cliente, id_tasa) 
@@ -227,6 +233,43 @@ class VentasModel {
                 
         $stmt = $this->pdo->prepare($sql);
         $stmt->execute([$idVenta]);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    /**
+     * Ventas de los últimos 7 días (total USD por día)
+     */
+    public function getVentasSemanales() {
+        $sql = "SELECT 
+                    DATE(fecha) as fecha,
+                    SUM(total_usd) as total_usd
+                FROM ventas
+                WHERE fecha >= DATE_SUB(CURDATE(), INTERVAL 6 DAY)
+                GROUP BY DATE(fecha)
+                ORDER BY fecha ASC";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    /**
+     * Top N productos más vendidos (por cantidad) en un rango reciente (últimos 30 días)
+     */
+    public function getTopProductosMasVendidos($limit = 5) {
+        $sql = "SELECT 
+                    p.nombre_producto,
+                    SUM(d.cantidad) as total_cantidad,
+                    SUM(d.subtotal_usd) as total_usd
+                FROM detalle_venta d
+                JOIN ventas v ON d.id_venta = v.id_venta
+                JOIN productos p ON d.id_producto = p.id_producto
+                WHERE v.fecha >= DATE_SUB(CURDATE(), INTERVAL 30 DAY)
+                GROUP BY p.id_producto, p.nombre_producto
+                ORDER BY total_cantidad DESC
+                LIMIT ?";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->bindValue(1, (int)$limit, PDO::PARAM_INT);
+        $stmt->execute();
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 }

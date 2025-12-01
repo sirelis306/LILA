@@ -38,12 +38,20 @@ $currentPage = $_GET['r'] ?? 'admin';
                 class="sidebar-link <?= $currentPage === 'ventas' ? 'active' : '' ?>">
                 <i class="fi fi-rr-shopping-cart"></i> <span>Ventas</span>
                 </a>
+                <a href="<?= BASE_URL ?>?r=clientes" 
+                class="sidebar-link <?= in_array($currentPage, ['clientes', 'form-cliente']) ? 'active' : '' ?>">
+                <i class="fi fi-rr-users"></i> <span>Clientes</span>
+                </a>
                 <?php if ($esAdmin): ?>
                 <a href="<?= BASE_URL ?>?r=inventario" 
-                class="sidebar-link <?= $currentPage === 'inventario' ? 'active' : '' ?>">
+                class="sidebar-link <?= in_array($currentPage, ['inventario', 'form-producto']) ? 'active' : '' ?>">
                 <i class="fi fi-rr-box"></i> <span>Inventario</span>
                 </a>
                 <?php endif; ?>
+                <a href="<?= BASE_URL ?>?r=perfil" 
+                class="sidebar-link <?= $currentPage === 'perfil' ? 'active' : '' ?>">
+                <i class="fi fi-rr-settings"></i> <span>Ajustes</span>
+                </a>
                 <a href="<?= BASE_URL ?>?r=logout" class="sidebar-link">
                 <i class="fi fi-rr-exit"></i> <span>Cerrar Sesión</span>
                 </a>
@@ -54,7 +62,7 @@ $currentPage = $_GET['r'] ?? 'admin';
         <main class="main-content">
             <header class="content-header">
                 <h1 class="content-title"><?= $titulo ?? 'Dashboard' ?></h1>
-                <p class="content-subtitle">Bienvenido, <?= htmlspecialchars($currentUser['user']) ?></p>
+                <p class="content-subtitle">Bienvenido, <?= htmlspecialchars($currentUser['nombre'] ?? $currentUser['user']) ?></p>
             </header>
             
             <div class="content-body">
