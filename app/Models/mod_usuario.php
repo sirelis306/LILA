@@ -86,6 +86,11 @@ class User {
         $campos = [];
         $params = [];
 
+        if (isset($datos['nombre']) && $datos['nombre'] !== '') {
+            $campos[] = "nombre = ?";
+            $params[] = $datos['nombre'];
+        }
+
         if (isset($datos['usuario']) && $datos['usuario'] !== '') {
             $campos[] = "usuario = ?";
             $params[] = $datos['usuario'];
@@ -102,6 +107,42 @@ class User {
         }
 
         return $this->ejecutarUpdate($idUsuario, $campos, $params);
+    }
+
+    /**
+     * Crea un nuevo usuario
+     */
+    public function crearUsuario($datos) {
+        // Validar que el usuario no exista
+        if ($this->usernameExists($datos['usuario'])) {
+            throw new Exception("El nombre de usuario ya está en uso");
+        }
+
+        // Validar campos requeridos
+        if (empty($datos['usuario']) || empty($datos['contrasena']) || empty($datos['rol'])) {
+            throw new Exception("Faltan campos requeridos para crear el usuario");
+        }
+
+        // Construir la consulta
+        $campos = ['usuario', 'contrasena', 'rol'];
+        $valores = ['?', '?', '?'];
+        $params = [
+            $datos['usuario'],
+            password_hash($datos['contrasena'], PASSWORD_DEFAULT),
+            $datos['rol']
+        ];
+
+        $sql = "INSERT INTO usuarios (" . implode(", ", $campos) . ") VALUES (" . implode(", ", $valores) . ")";
+        
+        try {
+            $stmt = $this->pdo->prepare($sql);
+            return $stmt->execute($params);
+        } catch (PDOException $e) {
+            if (strpos($e->getMessage(), "Unknown column 'nombre'") !== false) {
+                throw new Exception("El campo 'nombre' no existe en la base de datos. Por favor ejecuta el script SQL para agregarlo.");
+            }
+            throw $e;
+        }
     }
 
     private function ejecutarUpdate($idUsuario, array $campos, array $params) {

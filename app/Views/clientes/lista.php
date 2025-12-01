@@ -60,16 +60,21 @@ include __DIR__ . '/../shared/dashboard_layout.php';
                                 <td><?= htmlspecialchars($cliente['apellido']) ?></td>
                                 <td>
                                     <?php 
-                                    $telefono = htmlspecialchars($cliente['telefono']);
+                                    $telefono = isset($cliente['telefono']) ? trim($cliente['telefono']) : '';
                                     // Si el teléfono no empieza con +, agregar código de Venezuela por defecto
-                                    if (!empty($telefono) && substr($telefono, 0, 1) !== '+') {
-                                        $telefono = '+58' . $telefono;
+                                    if (!empty($telefono)) {
+                                        if (substr($telefono, 0, 1) !== '+') {
+                                            $telefono = '+58' . $telefono;
+                                        }
+                                        $telefonoEscapado = htmlspecialchars($telefono);
+                                        echo '<a href="tel:' . $telefonoEscapado . '" style="color: var(--purpura-vibrante); text-decoration: none; font-weight: 500;">';
+                                        echo '<i class="fi fi-rr-phone-call" style="margin-right: 5px;"></i>';
+                                        echo $telefonoEscapado;
+                                        echo '</a>';
+                                    } else {
+                                        echo '<span style="color: var(--texto-claro);">Sin teléfono</span>';
                                     }
                                     ?>
-                                    <a href="tel:<?= $telefono ?>" style="color: var(--purpura-vibrante); text-decoration: none; font-weight: 500;">
-                                        <i class="fi fi-rr-phone-call" style="margin-right: 5px;"></i>
-                                        <?= $telefono ?>
-                                    </a>
                                 </td>
                                 <td>
                                     <div class="producto-stock-linea">

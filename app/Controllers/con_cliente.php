@@ -71,15 +71,21 @@ class ClienteController {
 
         // Usar teléfono completo si está disponible, sino concatenar código + número
         if (!empty($telefonoCompleto)) {
-            $telefonoFinal = $telefonoCompleto;
+            $telefonoFinal = trim($telefonoCompleto);
         } else if (!empty($codigoPais) && !empty($telefono)) {
-            $telefonoFinal = $codigoPais . $telefono;
+            $telefonoFinal = trim($codigoPais) . trim($telefono);
+        } else if (!empty($telefono)) {
+            // Si solo hay teléfono sin código, agregar código de Venezuela por defecto
+            $telefonoFinal = '+58' . trim($telefono);
         } else {
-            $telefonoFinal = $telefono;
+            $telefonoFinal = '';
         }
 
-        if (empty($nombre) || empty($apellido) || empty($telefonoFinal)) {
-            $_SESSION['flash'] = "Por favor complete todos los campos requeridos";
+        // Validar que el teléfono tenga al menos 10 dígitos (código + número)
+        $telefonoFinal = preg_replace('/[^0-9+]/', '', $telefonoFinal);
+        
+        if (empty($nombre) || empty($apellido) || empty($telefonoFinal) || strlen($telefonoFinal) < 10) {
+            $_SESSION['flash'] = "Por favor complete todos los campos requeridos. El teléfono debe tener al menos 10 dígitos.";
             $id = $_POST['id_cliente'] ?? null;
             if ($id) {
                 header('Location: ' . BASE_URL . '?r=form-cliente&id=' . $id);

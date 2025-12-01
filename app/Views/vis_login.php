@@ -14,13 +14,14 @@ unset($_SESSION['flash']);
     <div class="login-wrapper">
         <div class="login-container">
             <div class="login-card">
-                <div class="login-logo">
-                    <img src="<?= BASE_URL ?>img/logo_lila.png" alt="Logo LILA" class="login-img">
-                    <div class="login-text-group">
-                        <h2>Sistema LILA</h2>
-                        <p>Cristalería y Aluminios Hermanos Soler C.A</p>
+                <div class="login-header">
+                    <div class="login-logo">
+                        <img src="<?= BASE_URL ?>img/logo_lila.png" alt="Logo LILA" class="login-img">
+                        <div class="login-text-group"> 
+                            <h2>Sistema LILA</h2>
+                            <p>Cristalería y Aluminios Hermanos Soler C.A</p>
+                        </div>
                     </div>
-                </div>
                 
                 <?php if ($flash): ?>
                     <div class="flash-message"><?= htmlspecialchars($flash) ?></div>

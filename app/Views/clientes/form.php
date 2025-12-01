@@ -61,7 +61,7 @@ include __DIR__ . '/../shared/dashboard_layout.php';
                                     <option value="+91" data-flag="🇮🇳">🇮🇳 India (+91)</option>
                                 </select>
                                 <input type="text" name="telefono" id="telefono" class="form-input" 
-                                    value="<?= htmlspecialchars($cliente['telefono'] ?? '') ?>" 
+                                    value="" 
                                     required maxlength="20" placeholder="Número de teléfono" 
                                     style="flex: 1;">
                             </div>
@@ -132,11 +132,13 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Si hay un teléfono existente, intentar extraer el código
     <?php if (isset($cliente['telefono']) && !empty($cliente['telefono'])): ?>
-        const telefonoExistente = '<?= htmlspecialchars($cliente['telefono']) ?>';
-        const { codigo, numero } = extraerCodigoPais(telefonoExistente);
-        codigoPais.value = codigo;
-        telefono.value = numero;
-        actualizarTelefonoCompleto();
+        const telefonoExistente = <?= json_encode($cliente['telefono']) ?>;
+        if (telefonoExistente) {
+            const { codigo, numero } = extraerCodigoPais(telefonoExistente);
+            codigoPais.value = codigo;
+            telefono.value = numero;
+            actualizarTelefonoCompleto();
+        }
     <?php else: ?>
         // Si es nuevo cliente, establecer Venezuela por defecto
         codigoPais.value = '+58';

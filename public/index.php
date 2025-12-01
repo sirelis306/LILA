@@ -56,6 +56,8 @@ switch ($r) {
 
   // Administración de usuarios (solo admin)
   case 'usuarios':           requireRole(['administrador']); (new UsuariosAdminController)->index(); break;
+  case 'crear-usuario':      requireRole(['administrador']); (new UsuariosAdminController)->crear(); break;
+  case 'guardar-usuario':    requireRole(['administrador']); (new UsuariosAdminController)->guardar(); break;
   case 'editar-usuario':     requireRole(['administrador']); (new UsuariosAdminController)->editar(); break;
   case 'actualizar-usuario': requireRole(['administrador']); (new UsuariosAdminController)->actualizar(); break;
 

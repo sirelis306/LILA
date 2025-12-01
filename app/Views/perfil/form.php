@@ -77,6 +77,53 @@ include __DIR__ . '/../shared/dashboard_layout.php';
                 </form>
             </div>
         </div>
+
+        <?php if (currentUser()['rol'] === 'administrador'): ?>
+        <!-- Sección de Gestión de Usuarios (solo para administradores) -->
+        <div class="card-product-main formulario-inventario" style="margin-top: 30px;">
+            <div class="main-form-content">
+                <div class="admin-section-usuarios">
+                    <div class="admin-section-header">
+                        <div class="admin-section-icon">
+                            <i class="fi fi-rr-users"></i>
+                        </div>
+                        <div class="admin-section-title-group">
+                            <h3 class="admin-section-title">Gestión de Usuarios</h3>
+                            <p class="admin-section-subtitle">Administra usuarios del sistema</p>
+                        </div>
+                    </div>
+                    
+                    <div class="admin-section-content">
+                        <p class="admin-section-description">
+                            Como administrador, puedes gestionar todos los usuarios del sistema, editar sus datos personales, cambiar sus contraseñas y modificar sus roles.
+                        </p>
+                        
+                        <div class="admin-section-features">
+                            <div class="admin-feature-item">
+                                <i class="fi fi-rr-user-pen"></i>
+                                <span>Editar información de usuarios</span>
+                            </div>
+                            <div class="admin-feature-item">
+                                <i class="fi fi-rr-key"></i>
+                                <span>Cambiar contraseñas</span>
+                            </div>
+                            <div class="admin-feature-item">
+                                <i class="fi fi-rr-shield-check"></i>
+                                <span>Gestionar roles y permisos</span>
+                            </div>
+                        </div>
+                        
+                        <div class="admin-section-action">
+                            <a href="<?= BASE_URL ?>?r=usuarios" class="btn btn-primary btn-admin-action">
+                                <i class="fi fi-rr-users"></i>
+                                <span>Ir a Gestión de Usuarios</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <?php endif; ?>
     </div>
 </div>
 
